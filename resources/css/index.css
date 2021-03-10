@@ -31,7 +31,7 @@ body {
   }
   
   p {
-    color: AliceBlue;
+    color: rgb(239, 241, 243);
     line-height: 1.3em;
     text-align: left;
     width: 100%;
@@ -41,7 +41,7 @@ body {
   }
   
   .byline {
-    font-family: Helvetica;
+    font-family: 'Times New Roman';
     color: rgba(255, 255, 255, 0.5);
     float: left;
     font-size: 14px;
@@ -70,7 +70,7 @@ body {
   }
   
   .image {
-    background-image: url("https://content.codecademy.com/courses/freelance-1/unit-2/soccer.jpeg");
+    background-image: url("");
     background-size: cover;
     background-position: center;
     height: 300px;
