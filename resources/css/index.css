@@ -9,14 +9,13 @@ body {
     padding: 0;
   }
 
-/* unvisited link */
-a:link {
+/* unvisited and vistedlink */
+a:link, a:visited {
   color: white;
-}
-
-/* visited link */
-a:visited {
-  color: rgb(106, 236, 106);
+  padding: 14px 25px;
+  text-align: left;
+  text-decoration: none;
+  display: inline-block;
 }
 
 /* mouse over link */
