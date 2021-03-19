@@ -2,11 +2,17 @@ body {
     /* Old browsers */
     background: #087210;
     /* Chrome 10-25, Safari 5.1-6 */
-    background: -webkit-linear-gradient(-45deg, #0e8622, #011b0c);
+    /*background: -webkit-linear-gradient(-45deg, #0e8622, #011b0c);*/
     /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-    background: linear-gradient(-45deg, #357d3b, #143015);
+    /*background: linear-gradient(-45deg, #357d3b, #143015);*/
     margin: 0;
     padding: 0;
+  }
+
+  .container {
+    margin: 0 auto;
+    max-width: 940px; 
+    padding: 0 10px;
   }
 
   .nav { 
@@ -68,7 +74,7 @@ body {
     font-size: 18px;
     font-weight: bold;
   }
-
+/*
   .small_description{
     color: rgb(239, 241, 243);
     line-height: 1.3em;
@@ -122,6 +128,7 @@ body {
     float: left;
     width: 50px;
   }
+  */
   
   /*for id's, do 
   #id_Name{
