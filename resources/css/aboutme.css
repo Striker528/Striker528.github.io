@@ -73,6 +73,18 @@ h2 {
   font-family: Georgia;
 }
 
+h3 {
+  /*border-bottom: 1px solid rgb(255, 255, 255);*/
+  color: rgb(255, 255, 255);
+  font-weight: 100;
+  font-size: 22px;
+  line-height: 24px;
+  padding-bottom: 30px;
+  text-align: left;
+  width: 70%;
+  font-family: Georgia;
+}
+
 p {
   color: rgb(239, 241, 243);
   line-height: 1.3em;

@@ -83,7 +83,8 @@ a:active MUST come after a:hover
     font-weight: normal;
   }
 
-  .small_description{
+  .My_Projects{
+    color: rgb(239, 241, 243);
     background-color: black;
     width: 320px;
     padding: 10px;
