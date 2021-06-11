@@ -89,7 +89,7 @@ a:active MUST come after a:hover
 
   .My_Projects{
     color: rgb(239, 241, 243);
-    /*background-color: black;*/
+    background-color: black;
     width: 320px;
     padding: 10px;
     border: 5px solid rgb(6, 65, 6);
