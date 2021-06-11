@@ -1,0 +1,152 @@
+body {
+    /* Old browsers */
+    /* background: #087210; */
+    background-image: url("..\pictures\Black-Green-Big-Triangles.jpg");
+    /* Chrome 10-25, Safari 5.1-6 */
+    /*background: -webkit-linear-gradient(-45deg, #0e8622, #011b0c);*/
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    /*background: linear-gradient(-45deg, #357d3b, #143015);*/
+    margin: 0;
+    padding: 0;
+  }
+
+/* unvisited and vistedlink */
+a:link, a:visited {
+  color: white;
+  padding: 14px 25px;
+  text-align: left;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 300px;
+}
+
+/* mouse over link */
+a:hover {
+  color: rgb(235, 27, 72);
+}
+
+/* selected link */
+a:active {
+  color: rgb(74, 74, 243);
+}
+
+/*
+a:hover MUST come after a:link and a:visited
+a:active MUST come after a:hover
+
+*/
+
+  .container {
+    margin: 0 auto;
+    max-width: 940px; 
+    padding: 0 10px;
+  }
+
+  .nav { 
+    background: #000;
+    height: 50px; 
+    width: 100%;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  
+  h1 {
+    color: #FFF !important;
+    font-size: 2em;
+    padding-top: 100px;
+    width: 100%;
+    font-family: Georgia;
+    text-align: center;
+  }
+  
+  h2 {
+    /*border-bottom: 1px solid rgb(255, 255, 255);*/
+    color: rgb(255, 255, 255);
+    font-weight: 100;
+    font-size: 22px;
+    line-height: 24px;
+    padding-bottom: 30px;
+    text-align: left;
+    width: 70%;
+    font-family: Georgia;
+  }
+  
+  p {
+    color: rgb(239, 241, 243);
+    line-height: 1.3em;
+    text-align: left;
+    width: 100%;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 18px;
+    font-weight: normal;
+  }
+
+  .small_description{
+    background-color: black;
+    width: 320px;
+    padding: 10px;
+    border: 5px solid rgb(6, 65, 6);
+    margin: 10;
+  }
+/*
+  .small_description{
+    color: rgb(239, 241, 243);
+    line-height: 1.3em;
+    text-align: left;
+    width: 100%;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .byline {
+    font-family: 'Times New Roman';
+    color: rgb(255, 255, 255);
+    float: left;
+    font-size: 14px;
+    padding-left: 10px;
+    text-transform: uppercase;
+  }
+  
+  .caption {
+    display: block;
+    font-family: 'Playfair Display', serif;
+    font-size: 14px;
+    font-style: italic;
+    line-height: 14px;
+    margin-left: 20px;
+    padding: 10px;
+    position: relative;
+    top: 80%;
+    width: 60%;
+    background-color: white;
+    color: black;
+    opacity: 0.75;
+  }
+  
+  .content {
+    padding: 40px;
+  }
+  
+  .image {
+    background-image: url("");
+    background-size: cover;
+    background-position: center;
+    height: 300px;
+  }
+  
+  .writer-img {
+    -webkit-box-shadow: 5px 0px 5px 0px rgba(0, 0, 50, 0.97);
+    -moz-box-shadow: 5px 0px 5px 0px rgba(0, 0, 50, 0.97);
+    box-shadow: 5px 0px 5px 0px rgba(0, 0, 50, 0.97);
+    float: left;
+    width: 50px;
+  }
+  */
+  
+  /*for id's, do 
+  #id_Name{
+    
+  }*/
