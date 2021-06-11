@@ -40,13 +40,13 @@ a:active MUST come after a:hover
 
 */
 
-  .container {
+.container {
     margin: 0 auto;
     max-width: 940px; 
     padding: 0 10px;
-  }
+}
 
-  .nav { 
+.nav { 
     background: #000;
     height: 50px; 
     width: 100%;
@@ -54,18 +54,18 @@ a:active MUST come after a:hover
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-  }
+}
   
-  h1 {
+h1 {
     color: #FFF !important;
     font-size: 2em;
     padding-top: 100px;
     width: 100%;
     font-family: Georgia;
     text-align: center;
-  }
+}
   
-  h2 {
+h2 {
     /*border-bottom: 1px solid rgb(255, 255, 255);*/
     color: rgb(255, 255, 255);
     font-weight: 100;
@@ -75,9 +75,9 @@ a:active MUST come after a:hover
     text-align: left;
     width: 70%;
     font-family: Georgia;
-  }
+}
   
-  p {
+p {
     color: rgb(239, 241, 243);
     line-height: 1.3em;
     text-align: left;
@@ -85,13 +85,13 @@ a:active MUST come after a:hover
     font-family: 'Times New Roman', Times, serif;
     font-size: 18px;
     font-weight: normal;
-  }
+}
 
-  .My_Projects{
+.My_Projects{
     color: rgb(239, 241, 243);
     background-color: black;
     width: 320px;
     padding: 10px;
     border: 5px solid rgb(6, 65, 6);
     margin: 10;
-  }
+}
