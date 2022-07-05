@@ -1,0 +1,15 @@
+Look at CS97 web app
+
+V1: Not work
+https://medium.com/swlh/building-a-simple-web-application-with-node-express-mongodb-dcd53231e83c
+
+fixing npm version:
+	https://stackoverflow.com/questions/72401421/message-npm-warn-config-global-global-local-are-deprecated-use-loc
+
+
+V2: Not Work
+https://www.tutsmake.com/login-and-registration-form-in-node-js-express-mongodb/
+
+
+V3:
+https://github.com/mehulmpt/node-auth-youtube
