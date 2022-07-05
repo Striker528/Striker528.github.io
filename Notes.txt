@@ -11,5 +11,10 @@ V2: Not Work
 https://www.tutsmake.com/login-and-registration-form-in-node-js-express-mongodb/
 
 
-V3:
+V3: WORKS GREAT!!
+https://www.youtube.com/watch?v=b91XgdyX-SM
 https://github.com/mehulmpt/node-auth-youtube
+
+
+Email Regex:
+https://stackoverflow.com/questions/201323/how-can-i-validate-an-email-address-using-a-regular-expression

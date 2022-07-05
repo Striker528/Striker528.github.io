@@ -3,11 +3,13 @@ const path = require('path')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const User = require('./model/user')
+//For the different schema
+const Media = require('./model/media')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-
 const JWT_SECRET = 'j;aijsd;lkjwiej@oijldijfdbsakldhflsjdiqo*&*%*()#**%&KJLJLI'
-
+const ejs = require('ejs');
+const { kStringMaxLength } = require('buffer');
 
 const url = "mongodb+srv://Striker528:FirstTime742022@cluster0.mizvf.mongodb.net/collection?retryWrites=true&w=majority"
 mongoose.connect(url, {
@@ -16,12 +18,21 @@ mongoose.connect(url, {
    useUnifiedTopology: true
    //useCreateIndex: true
 })
+const mongo = require('mongodb');
+const MongoClient = mongo.MongoClient;
+
+//connection to the database
+//const db = client.db("dataForWebAppDatabase");
+//connecting to the specific collection
+//const eventsCollection = db.collection("events");
 
 const app = express()
 app.use('/', express.static(path.join(__dirname, 'static')))
 //Middle ware for express to decode the body which is coming in
 //if the body is not valid json, an error is thrown
 app.use(bodyParser.json())
+
+//app.set('view engine', 'ejs');
 
 
 app.post('/api/change-password', async (req, res) => {
@@ -177,7 +188,106 @@ app.post('/api/register', async (req, res) =>{
     res.json({status: 'ok'})
 })
 
+app.post('/api/register_media', async (req, res) =>{
+    //console.log(req.body)
+
+    const { 
+		title: media_title, 
+		series, 
+		num_in_series,
+		author,
+		publisher,
+		star_wars_date,
+		published_date 
+	} = req.body
+	//check for num in series, proabbly make it null
+	console.log("Title is:" + media_title);
+	console.log("Series is:" + series);
+	console.log("Num in series: "+ num_in_series);
+	console.log("Author: " + author);
+	console.log("Publisher " + publisher);
+	console.log("Star Wars" + star_wars_date);
+	console.log("Published Date" + published_date);
+
+
+    //Validation for later
+
+	/*
+    if (!title || typeof title !== 'string') {
+		return res.json({ status: 'error', error: 'Invalid title' })
+	}
+	*/
+
+	/*
+	if (!author || typeof username !== 'string') {
+		return res.json({ status: 'error', error: 'Invalid author' })
+	}
+	*/
+
+	try {
+		const response = await Media.create({
+            //Remember to have all fields or it won't work
+            media_title, 
+            series, 
+            num_in_series,
+            author,
+            publisher,
+            star_wars_date,
+            published_date
+		})
+		console.log('Media added successfully: ', response)
+	} catch (error) {
+        //know that code 11000 is duplicate from printing the stringify error
+		if (error.code === 11000) {
+			// duplicate key
+            //console.log(JSON.stringify(error))
+			return res.json({ status: 'error', error: 'Media already exists' })
+		}
+		throw error
+	}
+    res.json({status: 'ok'})
+})
+
+app.get('/main_display', async (req, res) =>{
+	//app.set('view engine', 'ejs');
+	app.set('view engine', 'ejs');
+	//app.set('views', path.join(__dirname, 'views'));
+	//app.use('/', express.static(path.join(__dirname, 'views')))
+	//This would be my Media
+	//const Movie = mongoose.model('Movie', moviesSchema);
+
+	//mongoose.connect('mongodb+srv://Striker528:FirstTime742022@cluster0.mizvf.mongodb.net/collection?retryWrites=true&w=majority');
+
+	
+	Media.find({}, function(err, media) {
+		//for ejs
+		//res.render(ejs file)
+		res.render('main_display', {
+			//Javascript object
+			//this gets pushed to the index.ejs file
+			mediaList: media
+		})
+	})
+
+	app.use('/', express.static(path.join(__dirname, 'static')))
+})
+
+/*
+app.post("/events", (req, res) => {
+eventsCollection
+	.insertOne(req.body)
+	.then((result) => {
+	res.redirect("/");
+	})
+	.catch((error) => console.error(error));
+});
+*/
+
 var port = process.env.PORT || 3000;
 app.listen(port, function () {
   console.log("Server Has Started!");
 });
+
+function escapeRegex(text) {
+	return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+}

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    
+</head>
+
+<body>
+    <section data-position="search-event">
+        <h2><i class="search-form" style="font-size:40px"></i> Search Events</h2>
+        <ul class="search-event-class">
+        <form action="/search-events" method="POST">
+            <input type="text" placeholder="Search Title" name="media_title" size="50"/><br />
+            <input type="text" placeholder="Search Series" name="media_super_heading" size="50"/><br />
+            <input type="text" placeholder="Search Place in Series" name="number_in_series" size="50"/><br />
+            <input type="text" placeholder="Search Author" name="author" size="50"/><br />
+            <input type="text" placeholder="Search Publisher" name="publisher" size="50"/><br />
+            <input type="text" placeholder="Search Date in Star Wars" name="star_wars_date" size="50"/><br />
+            <input type="text" placeholder="Search Published Date" name="published_date" size="50"/><br />
+            <button type="submit">Search Submit</button>
+        </form>
+      </ul>
+      </section>
+
+      <section data-position="got_back_searched_events">
+        <h2><i class='searched_events_class' style='font-size:40px'></i>Events</h2>
+        <ul class="got_back_searched_events">
+          <!-- Loop through quotes -->
+          <% for(var i = 0; i < events.length; i++) {%>
+            <li class="event">
+              <!-- Output name from the iterated quote object -->
+              <span><b><i class='title'></i></b> <b><%= events[i].Name %> </b></span> <br>
+            <span><b><i class='media_super_heading'></i></b> <%= events[i].Host %></span> <br>
+            <span><b><i class='number_in_series'></i></b> <%= events[i].Date %></span><br>
+            <span><b><i class="author"></i></b>  <%= events[i].Time %></span> <br>
+            <span><b><i class="publisher" style="font-size:24px"></i></i></b>  <%= events[i].Where %></span> <br>
+            <span><b><i class='star_wars_date'></i></b> <%= events[i].Description %></span> <br> <br>
+            <span><b><i class='published_date'></i></b> <%= events[i].Description %></span> <br> <br>
+            </li>
+          <% } %>
+        </ul>
+      </section>
+</body>

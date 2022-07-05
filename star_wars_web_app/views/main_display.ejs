@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!--
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    -->
+</head>
+<body>
+    
+    <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Title</th>
+            <th scope="col">Author</th>
+            <th scope="col">Publisher</th>
+            <th scope="col">Star Wars Date</th>
+          </tr>
+        </thead>
+        <tbody>
+        <%mediaList.forEach(media => {%>
+            <tr>
+                <th scope="row"><%= media.media_title %></th>
+                <td><%= media.author %></td>
+                <td><%= media.publisher %></td>
+                <td><%= media.star_wars_date %></td>
+            </tr>
+        <%})%>
+        </tbody>
+      </table>
+</body>
+</html>
