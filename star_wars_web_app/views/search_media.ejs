@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Search Page</title>
+</head>
+
+<!-- https://www.geeksforgeeks.org/working-with-forms-using-express-js-in-node-js/ -->
+
+<body>
+  
+  <h2><i class="fa fa-search" style="font-size:40px"></i> Search Events</h2>
+
+  <!-- Creating a form where action will be on "/search_media" and the method will be "POST" -->
+  <!--Opening the ejs tags for including header file-->
+  <%- include("./partials/header") %>
+  <form action="/search_media" method="POST">
+    <label>Title: </label>
+    <input type="text" placeholder="Title" name="title"><br><br>
+    <label>Author: </label>
+    <input type="text" placeholder="Author" name="author"><br><br>
+    <button>Submit</button>
+  </form>
+
+    
+    <tbody>
+      <%mediaList.forEach(media => {%>
+          <tr>
+              <th scope="row"><%= media.media_title %></th>
+              <td><%= media.author %></td>
+              <td><%= media.publisher %></td>
+              <td><%= media.star_wars_date %></td>
+          </tr>
+      <%})%>
+      </tbody>
+</body>

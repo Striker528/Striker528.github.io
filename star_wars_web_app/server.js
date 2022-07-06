@@ -22,9 +22,9 @@ const mongo = require('mongodb');
 const MongoClient = mongo.MongoClient;
 
 //connection to the database
-//const db = client.db("dataForWebAppDatabase");
+//const db = MongoClient.db("collections");
 //connecting to the specific collection
-//const eventsCollection = db.collection("events");
+//const mediaCollection = db.collection("media");
 
 const app = express()
 app.use('/', express.static(path.join(__dirname, 'static')))
@@ -32,7 +32,8 @@ app.use('/', express.static(path.join(__dirname, 'static')))
 //if the body is not valid json, an error is thrown
 app.use(bodyParser.json())
 
-//app.set('view engine', 'ejs');
+//Need for ejs -> js forms (like the search)
+app.use(bodyParser.urlencoded({extended:true}));
 
 
 app.post('/api/change-password', async (req, res) => {
@@ -201,13 +202,13 @@ app.post('/api/register_media', async (req, res) =>{
 		published_date 
 	} = req.body
 	//check for num in series, proabbly make it null
-	console.log("Title is:" + media_title);
-	console.log("Series is:" + series);
-	console.log("Num in series: "+ num_in_series);
-	console.log("Author: " + author);
-	console.log("Publisher " + publisher);
-	console.log("Star Wars" + star_wars_date);
-	console.log("Published Date" + published_date);
+	//console.log("Title is:" + media_title);
+	//console.log("Series is:" + series);
+	//console.log("Num in series: "+ num_in_series);
+	//console.log("Author: " + author);
+	//console.log("Publisher " + publisher);
+	//console.log("Star Wars" + star_wars_date);
+	//console.log("Published Date" + published_date);
 
 
     //Validation for later
@@ -257,7 +258,6 @@ app.get('/main_display', async (req, res) =>{
 	//const Movie = mongoose.model('Movie', moviesSchema);
 
 	//mongoose.connect('mongodb+srv://Striker528:FirstTime742022@cluster0.mizvf.mongodb.net/collection?retryWrites=true&w=majority');
-
 	
 	Media.find({}, function(err, media) {
 		//for ejs
@@ -282,6 +282,89 @@ eventsCollection
 	.catch((error) => console.error(error));
 });
 */
+
+app.post("/search_media", async (req, res) => {
+	app.set('view engine', 'ejs');
+	//app.use(bodyParser.urlencoded({extended:true}));
+
+	console.log("Did post to search_media");
+	console.log("Req.body is:")
+	console.log(req.body);
+	console.log("Req.body.title is:")
+	console.log(req.body.title);
+
+	const { 
+		title: media_title, 
+		series, 
+		num_in_series,
+		author,
+		publisher,
+		star_wars_date,
+		published_date 
+	} = req.body
+
+	//https://pietschsoft.com/post/2015/09/05/javascript-basics-how-to-create-a-dictionary-with-keyvalue-pairs
+	//https://www.geeksforgeeks.org/how-to-create-dictionary-and-add-key-value-pairs-dynamically/
+	let what_to_find = {};
+
+	if (media_title != null && media_title != '' && media_title != 'undefined'){
+		what_to_find["media_title"] = media_title;
+		console.log("media_title is:")
+		console.log(media_title);
+	}
+
+	if(series != null && series != '' && series != 'undefined'){
+		what_to_find["series"] = series;
+		console.log("series is:")
+		console.log(series);
+	}
+
+	if(num_in_series != null && num_in_series != '' && num_in_series != 'undefined'){
+		what_to_find["num_in_series"] = num_in_series;
+		console.log("num_in_series is:")
+		console.log(num_in_series);
+	}
+
+	if(author != null && author != '' && author != 'undefined'){
+		what_to_find["author"] = author;
+		console.log("author is:")
+		console.log(author);
+	}
+
+	if(publisher != null && publisher != '' && publisher != 'undefined'){
+		what_to_find["publisher"] = publisher;
+		console.log("publisher is:")
+		console.log(publisher);
+	}
+
+	if(star_wars_date != null && star_wars_date != '' && star_wars_date != 'undefined'){
+		what_to_find["star_wars_date"] = star_wars_date;
+		console.log("star_wars_date is:")
+		console.log(star_wars_date);
+	}
+
+	if(published_date != null && published_date != '' && published_date != 'undefined'){
+		what_to_find["published_date"] = published_date;
+		console.log("published_date is:")
+		console.log(published_date);
+	}
+
+	console.log("Form submitting is:");
+	console.log(what_to_find);
+
+	//https://www.geeksforgeeks.org/mongodb-db-collection-find-method/
+	//https://developerslogblog.wordpress.com/2019/10/15/mongodb-how-to-filter-by-multiple-fields/
+	//can put the find as a dictionary of what was inputted so if the user only wants to look up 1 -> all things they can
+	
+	Media.find(what_to_find, function(err, media) {
+		res.render('search_media', {
+			mediaList: media
+		})
+	})
+
+	app.use('/', express.static(path.join(__dirname, 'static')))
+});
+
 
 var port = process.env.PORT || 3000;
 app.listen(port, function () {
