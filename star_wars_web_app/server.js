@@ -2,6 +2,8 @@ const express = require('express')
 const path = require('path')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
+const cookieParser = require("cookie-parser");
+const sessions = require('express-session');
 const User = require('./model/user')
 //For the different schema
 const Media = require('./model/media')
@@ -33,8 +35,44 @@ app.use('/', express.static(path.join(__dirname, 'static')))
 app.use(bodyParser.json())
 
 //Need for ejs -> js forms (like the search)
-app.use(bodyParser.urlencoded({extended:true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 
+//https://www.section.io/engineering-education/session-management-in-nodejs-using-expressjs-and-express-session/
+const oneDay = 1000 * 60 * 60 * 24;
+app.use(sessions({
+	//secret:  a random unique string key used to authenticate a session. 
+	//It is stored in an environment variable and can’t be exposed to the public. 
+	//The key is usually long and randomly generated in a production environment.
+	secret: "thisismysecrctekeyfhrgfgrfrty84fwir767",
+	//saveUninitialized: this allows any uninitialized session to be sent to the store. 
+	//When a session is created but not modified, it is referred to as uninitialized.
+	saveUninitialized: true,
+	//cookie: this sets the cookie expiry time. 
+	//The browser will delete the cookie after the set duration elapses. 
+	//The cookie will not be attached to any of the requests in the future.
+	//In this case, we’ve set the maxAge to a single day as computed by the following arithmetic.
+	cookie: { maxAge: oneDay },
+	//resave: takes a Boolean value. 
+	//It enables the session to be stored back to the session store, even if the session was never modified during the request.
+	//This can result in a race situation in case a client makes two parallel requests to the server.
+	//Thus modification made on the session of the first request may be overwritten when the second request ends.
+	//The default value is true.However, this may change at some point.false is a better alternative.
+    resave: false 
+}));
+
+//parsing the incoming data
+//express.json == https://www.section.io/engineering-education/session-management-in-nodejs-using-expressjs-and-express-session/
+app.use(express.json());
+
+//serving public file
+app.use(express.static(__dirname));
+
+// cookie parser middleware
+app.use(cookieParser());
+
+// a variable to save a session
+//Change later
+var session;
 
 app.post('/api/change-password', async (req, res) => {
 	const { token, newpassword: plainTextPassword } = req.body
@@ -97,6 +135,12 @@ app.post('/api/login', async (req, res) => {
             //signed again by the end user
 			JWT_SECRET
 		)
+
+		/*
+		session=req.session;
+        session.userid=req.body.username;
+        console.log(req.session)
+		*/
 
         //this res.json({status: 'ok, data: 'COMING SOON})
         //is what is going to be sent over
@@ -272,16 +316,45 @@ app.get('/main_display', async (req, res) =>{
 	app.use('/', express.static(path.join(__dirname, 'static')))
 })
 
-/*
-app.post("/events", (req, res) => {
-eventsCollection
-	.insertOne(req.body)
-	.then((result) => {
-	res.redirect("/");
+//user's information
+app.get('/dashboard', async (req, res) =>{
+	//app.set('view engine', 'ejs');
+	app.set('view engine', 'ejs');
+	
+	//Dashboard section from:
+	// /https://www.youtube.com/watch?v=Ejg7es3ba2k&ab_channel=codedamn
+	// https://github.com/codedamn/full-mern-stack-video/tree/part1/client/src/pages
+	// Time: 32:42
+
+	//https://stackoverflow.com/questions/62861269/attempted-import-error-usehistory-is-not-exported-from-react-router-dom
+	//const navigate = useNavigate();
+	//const history = useNavigate();
+	var LocalStorage = require('node-localstorage').LocalStorage,
+	localStorage = new LocalStorage('./scratch');
+	const token = localStorage.getItem('token')
+	if (token) {
+		const user = jwt.decode(token)
+		if (!user) {
+			localStorage.removeItem('token')
+			//history.replace('/login')
+			window.location.href = '/main_display';
+		}
+	}
+
+	console.log('user is logged in')
+	
+	Media.find({}, function(err, media) {
+		//for ejs
+		//res.render(ejs file)
+		res.render('dashboard', {
+			//Javascript object
+			//this gets pushed to the index.ejs file
+			mediaList: media
+		})
 	})
-	.catch((error) => console.error(error));
-});
-*/
+
+	app.use('/', express.static(path.join(__dirname, 'static')))
+})
 
 app.post("/search_media", async (req, res) => {
 	app.set('view engine', 'ejs');
@@ -363,6 +436,21 @@ app.post("/search_media", async (req, res) => {
 	})
 
 	app.use('/', express.static(path.join(__dirname, 'static')))
+});
+
+//https://www.section.io/engineering-education/session-management-in-nodejs-using-expressjs-and-express-session/
+app.get('/',(req,res) => {
+    session=req.session;
+    if(session.userid){
+        res.send("Welcome User <a href=\'/logout'>click to logout</a>");
+    }else
+    res.sendFile('views/index.html',{root:__dirname})
+});
+
+//https://www.section.io/engineering-education/session-management-in-nodejs-using-expressjs-and-express-session/
+app.get('/logout',(req,res) => {
+    req.session.destroy();
+    res.redirect('/');
 });
 
 

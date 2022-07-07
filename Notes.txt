@@ -18,3 +18,8 @@ https://github.com/mehulmpt/node-auth-youtube
 
 Email Regex:
 https://stackoverflow.com/questions/201323/how-can-i-validate-an-email-address-using-a-regular-expression
+
+
+User Authorization:
+JWT, node.js, and mongodb
+https://www.bezkoder.com/node-js-mongodb-auth-jwt/
