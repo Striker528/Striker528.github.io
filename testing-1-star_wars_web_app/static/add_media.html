@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang = "en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name = "viewport" content = "width=device-width", inital-scale="1.0"/>
+        <title> Add Media</title>
+
+        <nav>
+            <a href="./add_media.html"> Add Media</a>
+            <a href="./register.html"> Register</a>
+            <a href="./login.html"> Login</a>
+            <a href="/main_display"><li> Show All Media </li></a>
+        </nav>
+
+    </head>
+    <body>
+        <!--- < h1>Hello</h1> -->
+
+        <h1>Adding in Media</h1>
+        <!-- Creating a form 1st-->
+        <form id = "registration_form_for_media">
+            <label>Title: </label>
+            <input type="text" id="media_title" placeholder="Add Title" size="50"/><br/>
+            <label>Series: </label>
+            <input type="text" id="media_super_heading" placeholder="Add Series" size="50"/><br/>
+            <label>Number in series: </label>
+            <input type="number" id="number_in_series" placeholder="Add Place in Series" size="50"/><br/>
+            <label>Author: </label>
+            <input type="text" id="author" placeholder="Add Author" size="50"/><br/>
+            <label>Publisher: </label>
+            <input type="text" id="publisher" placeholder="Add Publisher" size="50"/><br/>
+            <label for="published_date">Published date:</label>
+            <input type="date" id="published_date" placeholder="Add Published Date" size="50" min = "1977-05-25"><br/>
+
+            <label>Beginning Date: </label>
+            <input type="number" id="star_wars_begin_date" placeholder="Add beginning date in Star Wars" size="50">
+            <input type = "radio" id = "star_wars_begin_date_aby" name = "begin_date_aby_bby" value = "begin_aby">
+            <label for = "begin_aby">ABY</label>
+            <input type = "radio" id = "star_wars_begin_date_bby" name = "begin_date_aby_bby" value = "begin_bby">
+            <label for = "begin_bby">BBY</label> 
+            <br/>
+            <label>Ending Date: </label>
+            <input type="number" id="star_wars_end_date" placeholder="Add ending date in Star Wars" size="50">
+            <input type = "radio" id = "star_wars_end_date_aby" name = "end_date_aby_bby" value = "end_aby">
+            <label for = "end_aby">ABY</label>
+            <input type = "radio" id = "star_wars_end_date_bby" name = "end_date_aby_bby" value = "end_bby">
+            <label for = "end_bby">BBY</label>
+            <br/>
+            <!-- Then click on submit button-->
+            <input type = "submit" value = "Submit Form" />
+            <!--Whenever somebody clicks on the submit form, the registerUser function gets called-->
+            <!--Then that request is made to the server-->
+            <!-- Result variable is what the server responds-->
+        </form>
+
+        <script>
+            const form = document.getElementById('registration_form_for_media')
+            form.addEventListener('submit', registerMedia)
+
+            async function registerMedia(event){
+                //Default of the forms is to refreas the page, want to stop that
+                event.preventDefault()
+
+                //Need the value of these, not just the document.getElebyID('stuff')
+                const title = document.getElementById('media_title').value
+                const series = document.getElementById('media_super_heading').value
+                const num_in_series = document.getElementById('number_in_series').value
+                const author = document.getElementById('author').value
+                const publisher = document.getElementById('publisher').value
+
+                const begin_date_num = document.getElementById('star_wars_begin_date').value
+                const begin_date_num_aby = document.getElementById('star_wars_begin_date_aby').value
+                const begin_date_num_bby = document.getElementById('star_wars_begin_date_bby').value
+                const end_date_num = document.getElementById('star_wars_end_date').value
+                const end_date_num_aby = document.getElementById('star_wars_end_date_aby').value
+                const end_date_num_bby = document.getElementById('star_wars_end_date_bby').value
+
+
+                const published_date = document.getElementById('published_date').value
+                //now want to send this data to node server
+
+                const result = await fetch('/api/register_media',{
+                //when sending data as JSON, this is the way:
+                    method: 'POST',
+                    headers:{
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        title, 
+                        series, 
+                        num_in_series,
+                        author,
+                        publisher,
+                        begin_date_num,
+                        begin_date_num_aby,
+                        begin_date_num_bby,
+                        end_date_num,
+                        end_date_num_aby,
+                        end_date_num_bby,
+                        published_date
+                    })
+                }).then((res) => res.json()) // result from server into json
+
+                //console.log(result)
+
+                if (result.status === 'ok') {
+					// everythign went fine
+					alert('Success')
+				} else {
+					alert(result.error)
+				}
+
+            }
+        </script>
+    </body>
+</html>
