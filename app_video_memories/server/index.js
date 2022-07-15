@@ -10,11 +10,6 @@ import postRoutes from './routes/posts.js';
 const app = express();
 //now can it as a function
 
-//using express middleware to connect the postRoutes to our application
-//1st arg: starting path for all the routes inside the post.js
-//so every routes in postRoutes will start with '/posts'
-app.use('/posts', postRoutes)
-
 //general setup
 //send images, which can be large in size
 //so need to limit how much we send
@@ -22,6 +17,12 @@ app.use(bodyParser.json({ limit: "30mb", extended: true }))
 //properly set up bodyParser so that we can send our requests
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }))
 app.use(cors());
+
+//using express middleware to connect the postRoutes to our application
+//1st arg: starting path for all the routes inside the post.js
+//so every routes in postRoutes will start with '/posts'
+//have to specifiy the routes AFTER ape.use(cors())
+app.use('/posts', postRoutes)
 
 //connecting to the port
 const PORT = process.env.PORT || 5000;

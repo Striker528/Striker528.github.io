@@ -24,6 +24,7 @@ export const getPost = async (req, res) => {
     const { id } = req.params;
 
     try {
+        //asynchornius action, so need await here, and aysnc at the top of hte function
         const post = await PostMessage.findById(id);
         
         res.status(200).json(post);

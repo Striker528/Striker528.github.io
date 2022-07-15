@@ -1,0 +1,15 @@
+For client:
+	Want to keep it up and updating: nodemon
+	But don't want the nodemon in production
+	so use:
+		npm install nodemon -D
+	It puts nodemon in the devDependencies in the package.json
+
+	nodemon:
+		Install like above with the -D
+		In package.json:
+			"scripts": {
+				"start": "nodemon app.js"
+			},
+		Now:
+			npm start
