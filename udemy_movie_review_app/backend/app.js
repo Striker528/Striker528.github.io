@@ -22,8 +22,23 @@ app.use('/api/user', userRouter);
 //client: Model view
 //server: Model controller
 
-app.get('/about', (req, res) => {
-    res.send('<h1>Hello I am from your backend about</h1>');
+app.post('/sign-in',
+    //middleware
+    (req, res, next) => {
+        const { email, password } = req.body;
+        if (!email || !password)
+            return res.json({
+                error: 'email/password missing!'
+            });
+        //console.log(next);
+        //so next is a function
+        //next will decide if we want to go to the next function or not
+        //if we call it, go to the next funciton, not call == not go on
+        next();
+    },
+    //main body (not middleware)
+    (req, res) => {
+    res.send('<h1>Hello I am about page</h1>');
 })
 
 app.listen(8000, () => {
