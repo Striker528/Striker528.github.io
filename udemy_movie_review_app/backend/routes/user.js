@@ -2,9 +2,18 @@ const express = require('express');
 //adding in check method from validator
 //put this check in the validator function
 //const {check} = require("express-validator");
-const { userValidator, validate } = require("../middlewares/validator");
+const { userValidator, validate, validatePassword, signInValidator } = require("../middlewares/validator");
+const { isValidPassResetToken } = require("../middlewares/user");
 
-const { create, verifyEmail, resendEmailVerificationToken} = require('../controllers/user');
+const {
+    create,
+    verifyEmail,
+    resendEmailVerificationToken,
+    forgetPassword,
+    sendResetPasswordTokenStatus,
+    resetPassword,
+    signIn
+} = require('../controllers/user');
 
 const router = express.Router()
 
@@ -32,11 +41,29 @@ router.post(
 */
 router.post('/create', userValidator, validate, create);
 
+router.post('/sign-in', signInValidator, validate, signIn);
+
 //user posts the OTP
 router.post('/verify-email', verifyEmail);
 
 //resending the OTP for the user
 router.post("/resend-email-verification-token", resendEmailVerificationToken)
+
+//when the user forgot their password
+router.post("/forget-password", forgetPassword)
+
+//checking if we can reset the password using middleware
+//middleware being the check of isValidPassResetToken
+//if that passes, then go to the controller function sendResetPasswordTokenStatus
+router.post("/verify-pass-reset-token", isValidPassResetToken, sendResetPasswordTokenStatus);
+
+//1st middleware of validatePassword
+//Then, once that passes
+//Go to another middleware of validate:
+//validate: check if we got an array of errors, if so, tell the user
+//then in isValidPassResetToken: validate the token and userId
+//Finally, reset the password
+router.post("/reset-password", validatePassword, validate, isValidPassResetToken, resetPassword);
 
 //think from front-end perspective
 //get: send data to front-end

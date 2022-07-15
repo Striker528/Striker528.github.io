@@ -38,6 +38,12 @@ userSchema.pre('save', async function (next) {
 
     //middlware to see if we can go onto the next function or not
     next();
-})
+});
+
+//a function to make sure the new password is not the same as the old password
+userSchema.methods.comparePassword = async function (password) {
+    const result = await bcrypt.compare(password, this.password);
+    return result;
+  };
 
 module.exports = mongoose.model("User", userSchema)

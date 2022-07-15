@@ -38,7 +38,7 @@ emailVerificationSchema.pre('save', async function (next) {
     next();
 });
 
-emailVerificationSchema.methods.compaireToken = async function (token) {
+emailVerificationSchema.methods.compareToken = async function (token) {
     //data is token: actual data coming from our user
     //encrypted value is this.token : token that we have that is stored in the database
     const result = await bcrypt.compare(token, this.token);

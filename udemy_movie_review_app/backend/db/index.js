@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const url = "mongodb+srv://Striker528:FirstTime742022@cluster0.mizvf.mongodb.net/udemy_collection?retryWrites=true&w=majority"
+url = process.env.MONGODB_URL;
 mongoose.connect(url, {
    //console.log('Connected to Mongo DB Successfully!!');
    useNewUrlParser: true,

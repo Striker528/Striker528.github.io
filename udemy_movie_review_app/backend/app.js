@@ -1,4 +1,16 @@
-const express = require('express')
+const express = require('express');
+
+//for error handling
+//with this, don't need to wrap anything instead try,catch blocks
+require('express-async-errors');
+
+const morgan = require('morgan');
+
+const { errorHandler } = require("./middlewares/error");
+
+//to keep the important links: mongodb and jwt secure
+require('dotenv').config();
+
 //need to link the db/index.js
 //if don't provide the /index.js, index.js because the default file the program will look for
 require('./db');
@@ -8,7 +20,10 @@ const app = express();
 
 //need our app to accept json
 //convert everything coming from our front end to json
-app.use(express.json())
+app.use(express.json());
+
+//trouble with sending in sign-in data
+app.use(morgan('dev'))
 
 
 //want to use the userRouter inside the app:
@@ -22,24 +37,37 @@ app.use('/api/user', userRouter);
 //client: Model view
 //server: Model controller
 
-app.post('/sign-in',
-    //middleware
-    (req, res, next) => {
-        const { email, password } = req.body;
-        if (!email || !password)
-            return res.json({
-                error: 'email/password missing!'
-            });
-        //console.log(next);
-        //so next is a function
-        //next will decide if we want to go to the next function or not
-        //if we call it, go to the next funciton, not call == not go on
-        next();
-    },
-    //main body (not middleware)
-    (req, res) => {
-    res.send('<h1>Hello I am about page</h1>');
+// app.post('/sign-in',
+//     //middleware
+//     (req, res, next) => {
+//         const { email, password } = req.body;
+//         if (!email || !password)
+//             return res.json({
+//                 error: 'email/password missing!'
+//             });
+//         //console.log(next);
+//         //so next is a function
+//         //next will decide if we want to go to the next function or not
+//         //if we call it, go to the next funciton, not call == not go on
+//         next();
+//     },
+//     //main body (not middleware)
+//     (req, res) => {
+//     res.send('<h1>Hello I am about page</h1>');
+// })
+
+//with express-async-errors have better error handling
+//now, when there is an error, the message will be shown to the user instead of crashing the server
+//just need the below error handling at the very bottom
+//don't need try,catches for each function now
+/*
+app.use((err, req, res, next)=> {
+    console.log('err:', err);
+    res.status(500).json({error: err.message || err})
 })
+*/
+//Use this instead: more efficient
+app.use(errorHandler);
 
 app.listen(8000, () => {
     console.log('The port is listening on port 8000');
