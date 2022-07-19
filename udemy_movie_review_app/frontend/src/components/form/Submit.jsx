@@ -5,8 +5,10 @@ export default function Submit({value}) {
       <input type='submit'
       className="w-full
           rounded
-          bg-white
-          text-secondary
+          dark:bg-white
+          bg-secondary
+          dark:text-secondary
+          text-white
           hover:bg-opacity-90
           transition
           font-semibold

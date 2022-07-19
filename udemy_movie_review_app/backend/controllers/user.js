@@ -64,9 +64,15 @@ exports.create = async (req, res) => {
     //res.status(201).json({ user: newUser });
     //v3:
     //sending message to user to get their OTP code
-    res.status(201).json({ message: 'Please verify your email. OTP  has been sent to your email account!' });
-    //v4 refactored way:
-    //sendError(res, 'Please verify your email. OTP  has been sent to your email account!', 201)
+    //res.status(201).json({ message: 'Please verify your email. OTP  has been sent to your email account!' });
+    //v4 now sending data from frontend to backend:
+    res.status(201).json({
+        user: {
+            id: newUser._id,
+            name: newUser.name,
+            email: newUser.email
+        }
+    });
 };
 
 //have many different exports for singing in, changing passwords, etc

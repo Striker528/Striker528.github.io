@@ -5,14 +5,17 @@ import App from './App';
 //import reportWebVitals from './reportWebVitals';
 //https://reactrouter.com/docs/en/v6/getting-started/overview
 import { BrowserRouter } from 'react-router-dom';
+import ThemeProvider from './context/ThemeProvider';
 
 //k/*
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <BrowserRouter>
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>
+    <ThemeProvider>
+      <React.StrictMode>
+        <App />
+      </React.StrictMode>
+    </ThemeProvider>
   </BrowserRouter>
 );
 //*/

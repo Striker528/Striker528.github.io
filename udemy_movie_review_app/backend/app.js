@@ -8,6 +8,9 @@ const morgan = require('morgan');
 
 const { errorHandler } = require("./middlewares/error");
 
+//to allow the frontend and backend to talk from different servers: need cors
+const cors = require('cors');
+
 //to keep the important links: mongodb and jwt secure
 require('dotenv').config();
 
@@ -17,6 +20,8 @@ require('./db');
 const userRouter = require('./routes/user')
 const app = express();
 
+//this is all that is needed to allow the backend and frontend to talk from different servers
+app.use(cors());
 
 //need our app to accept json
 //convert everything coming from our front end to json
