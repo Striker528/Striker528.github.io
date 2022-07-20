@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Container from "../Container";
 import FormInput from '../form/FormInput';
 import Title from "../form/Title";
@@ -47,6 +48,9 @@ export default function Signup() {
         //console.log(target.value, target.name);
     }
 
+    //navigating around manually
+    const navigate = useNavigate()
+
     const handleSubmit = async (e) => {
         //stop the form refreshing and losing info
         e.preventDefault();
@@ -62,7 +66,18 @@ export default function Signup() {
         //use axios
         const { error2, user } = await createUser(userInfo);
         if (error2) return console.log(error2);
-        console.log(user);
+
+        //No error creating the user:
+        //when going to the verification, need to access the user
+        //pass configuration object, where pass state, in state, pass the user
+        navigate('/auth/verification', {
+            state: { user: Response.user },
+            //replace the previous history
+            //once they create an account by submitting the OTP
+            //cannot go back to the signup page
+            replace: true
+        });
+        //console.log(user);
     }
 
     return (

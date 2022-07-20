@@ -17,7 +17,8 @@ require('dotenv').config();
 //need to link the db/index.js
 //if don't provide the /index.js, index.js because the default file the program will look for
 require('./db');
-const userRouter = require('./routes/user')
+const userRouter = require('./routes/user');
+const { handleNotFound } = require('./utils/helper');
 const app = express();
 
 //this is all that is needed to allow the backend and frontend to talk from different servers
@@ -36,6 +37,13 @@ app.use(morgan('dev'))
 //now when we want to make a request to user routers endpoint
 //send to: '/api/user-create'
 app.use('/api/user', userRouter);
+
+
+//with multiple routes with 404 errors
+//if the app does not find any route matching above (/api/user) use: /*
+//and run this callback function
+//
+app.use('/*', handleNotFound);
 
 //MVC - Modal view controller
 //client has view, server does not

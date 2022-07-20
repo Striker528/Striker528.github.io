@@ -1,4 +1,5 @@
 import React, { useRef } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Container from "../Container";
 import FormInput from '../form/FormInput';
 import Title from "../form/Title";
@@ -6,8 +7,25 @@ import Submit from "../form/Submit";
 import { useEffect, useState } from 'react';
 import FormContainer from '../form/FormContainer';
 import { commonModalClasses } from '../../utils/theme';
+import { verifyUserEmail } from '../../api/auth';
 
 const OTP_LENGTH = 6;
+
+const isValidOTP = (otp) => {
+  //['', '', '', '', '', '']
+  //need to make sure we have all 6 OTP's and are all integers
+
+  let valid = false;
+
+  for (let val of otp) {
+    //1st: converting string to int
+    //2nd: checking if it is a number
+    valid = !isNaN(parseInt(val))
+    if (!valid) break;
+  }
+
+  return valid;
+};
 
 /*
 First of all the problem is inside React 18 when we try to use both onChange and onKeyDown 
@@ -40,6 +58,24 @@ export default function EmailVerification() {
   //use useRef to create a reference
   //then pass this reference to the ref hook in the otp.map(()) below
   const inputRef = useRef();
+
+  //when want to verify email, use the user, which is inside the state
+  const { state } = useLocation();
+  console.log("State1 is:")
+  console.log(state);
+  //user will have user._id
+  //need to save the user_id and OTP
+  //initially, state will have nothing in it, so need to give the optional parameter of ?
+  //which means, if there is a state, take the user component
+  //if no state, continue on
+  const user = state?.user;
+  console.log("State2 is:")
+  console.log(state)
+  console.log("User is:")
+  console.log(user)
+
+  //for manual navigation
+  const navigate = useNavigate();
 
   const focusNextInputField = (index) => {
     setActiveOtpIndex(index + 1);
@@ -96,6 +132,34 @@ export default function EmailVerification() {
     setOtp([...newOtp]);
   };
 
+  const handleKeyDown = ({ key }, index) => {
+    //console.log(key)
+    currentOTPIndex = index;
+    if (key === "Backspace") {
+      focusPrevInputField(currentOTPIndex);
+    }
+  };
+
+  //to send data to the backend
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+
+    if (!isValidOTP(otp)) {
+      return console.log('invalid OTP');
+    }
+
+    //submit otp
+    //need to validate otp form, only then can we submit otp
+    //console.log(otp);
+    //if look at backend/controller/user.js and look at the verifyEmail function
+    //see that we get back the message at the very bottom
+    const { error, message }= await verifyUserEmail({ userId: user.id, OTP: otp });
+  
+    if (error) return console.log(error)
+    
+    console.log(message);
+  }
+
   //hook
   useEffect(() => {
     //pass the code for the focus part
@@ -110,14 +174,20 @@ export default function EmailVerification() {
     //only do this when the activeOtpIndex changes, so that it why it is below
   }, [activeOtpIndex])
 
-
-  const handleKeyDown = ({ key }, index) => {
-    //console.log(key)
-    currentOTPIndex = index;
-    if (key === "Backspace") {
-        focusPrevInputField(currentOTPIndex);
-     }
-  };
+  //if no user has been found, deal with it
+  //v1:
+  //if (!user) return null;
+  //v2
+  //Forcing that whomever is accessing the auth/verification must be a user
+  ///*
+  useEffect(() => {
+    if (!user) {
+      console.log("No user when checking user")
+      navigate('/not-found')
+    }
+    //do this if the user is changed
+  }, [user]);
+  //*/
 
 
   //have an otp array and need to access the elements: otp.map
@@ -127,7 +197,7 @@ export default function EmailVerification() {
   return (
     <FormContainer>
       <Container>
-        <form className={commonModalClasses}>
+        <form onSubmit={handleSubmit} className={commonModalClasses}>
           <div>
             <Title>Please enter the OTP to verify your account</Title>
             <p className = "text-center dark:text-dark-subtle text-light-subtle">OTP has been sent to your email</p>
