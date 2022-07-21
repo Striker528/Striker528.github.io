@@ -48,6 +48,7 @@ export const getIsAuth = async (token) => {
   try {
     const { data } = await client.get("/user/is-auth", {
       headers: {
+        //the right way to send the token with with "Bearer ldajfkljalkdsudfil...."
         Authorization: "Bearer " + token,
         accept: "application/json",
       },

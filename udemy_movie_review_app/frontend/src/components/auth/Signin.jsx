@@ -11,12 +11,14 @@ import {
 } from '../../hooks';
 import { commonModalClasses } from '../../utils/theme';
 import FormContainer from '../form/FormContainer';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { isValidEmail } from '../../utils/helper';
 
 const validateUserInfo = ({ email, password }) => {
 
-    const isValidEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     if (!email.trim()) return { ok: false, error: "Email is missing" }; 
-    if (!isValidEmail.test(email)) return { ok: false, error: "Invalid email" };
+    if (!isValidEmail(email)) return { ok: false, error: "Invalid email" };
     
     if (!password.trim()) return { ok: false, error: "Password is missing!" };
     if (password.length < 8) return { ok: false, error: "Password is to short, please have at least 8 characters" };
@@ -25,15 +27,21 @@ const validateUserInfo = ({ email, password }) => {
 }
 
 export default function Signin() {
+    //setting up state called userInfo where we will have this email and password
     const [userInfo, setUserInfo] = useState({
         email: "",
         password: "",
     });
 
+    const navigate = useNavigate()
+
     const { updateNotification } = useNotification()
     const { handleLogin, authInfo } = useAuth()
-    console.log(authInfo);
+    const { isPending, isLoggedIn } = authInfo
 
+    //console.log(authInfo);
+
+    //whenever the user makes changes to email and password, need to update them
     const handleChange = ({ target }) => {
         const { value, name } = target
         setUserInfo({...userInfo, [name]: value})
@@ -43,10 +51,18 @@ export default function Signin() {
         e.preventDefault();
         const { ok, error } = validateUserInfo(userInfo);
         
+        //if there was something wrong with the submit, let the user know
         if (!ok) return updateNotification("error", error);
+        //backend api, sending the email and password
+        //sending to AuthProvider
         handleLogin(userInfo.email, userInfo.password)
-        
     }
+
+    useEffect(() => {
+        //we want to move our user somewhere else
+        //so need useNavigate hook
+        if(isLoggedIn) navigate('/')
+    }, [isLoggedIn])
 
     //const theme = useContext(ThemeContext);
     //console.log(theme);
@@ -74,7 +90,7 @@ export default function Signin() {
                         name='password'
                         type="password"
                     />
-                    <Submit value="Sign in" />
+                    <Submit value="Sign in" busy={ isPending} />
                     
                     <div className="flex justify-between">
                         <CustomLink to="/auth/forget-password">Forget password</CustomLink>

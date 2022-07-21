@@ -7,8 +7,8 @@ import Submit from "../form/Submit";
 import { useEffect, useState } from 'react';
 import FormContainer from '../form/FormContainer';
 import { commonModalClasses } from '../../utils/theme';
-import { verifyUserEmail } from '../../api/auth';
-import { useNotification } from '../../hooks';
+import { resendEmailVerificationToken, verifyUserEmail } from "../../api/auth";
+import { useAuth, useNotification } from '../../hooks';
 
 const OTP_LENGTH = 6;
 
@@ -54,6 +54,10 @@ export default function EmailVerification() {
   //another state
   //reference
   const [activeOtpIndex, setActiveOtpIndex] = useState(0)
+
+  const { isAuth, authInfo } = useAuth()
+  const { isLoggedIn, profile } = authInfo;
+  const { isVerified } = profile?.isVerified;
 
   //creating input
   //use useRef to create a reference
@@ -135,6 +139,12 @@ export default function EmailVerification() {
     setOtp([...newOtp]);
   };
 
+  const handleOTPResend = async () => {
+    const { error, message } = await resendEmailVerificationToken(user.id);
+    if (error) return updateNotification("error", error);
+    updateNotification("success", message);
+  };
+
   const handleKeyDown = ({ key }, index) => {
     //console.log(key)
     currentOTPIndex = index;
@@ -160,7 +170,12 @@ export default function EmailVerification() {
     //cannot just sent OTP like: OTP: otp without any changes as it is in array form
     //since the OTP must be a string or a hash
     //so do: OTP: otp.join('') to join all the values in the array to a string
-    const { error, message } = await verifyUserEmail({
+    //inside the user, have the token
+    const {
+      error,
+      message,
+      user: userResponse
+    } = await verifyUserEmail({
       userId: user.id,
       OTP: otp.join("")
     });
@@ -170,6 +185,10 @@ export default function EmailVerification() {
     
     //console.log(message);
     updateNotification('success', message)
+
+    //in AuthProvider, using isAuth method to check the token in the local storage
+    localStorage.setItem('auth-token', userResponse.token)
+    isAuth();
   }
 
   //hook
@@ -194,13 +213,15 @@ export default function EmailVerification() {
   ///*
   useEffect(() => {
     if (!user) {
-      console.log("No user when checking user")
+      //console.log("No user when checking user")
       navigate('/not-found')
     }
+    if (isLoggedIn && isVerified) navigate("/");
     //do this if the user is changed
-  //}, [user]);
-  }, [user, navigate]);
+  }, [user, isLoggedIn]);
+  //}, [user, navigate]);
   //*/
+
 
 
   //have an otp array and need to access the elements: otp.map
@@ -262,7 +283,16 @@ export default function EmailVerification() {
             })}
           </div>
           
-          <Submit value="Submit Code" />
+          <div>
+            <Submit value="Verify Account" />
+            <button
+              onClick={handleOTPResend}
+              type="button"
+              className="dark:text-white text-blue-500 font-semibold hover:underline mt-2"
+            >
+              I don't have OTP
+            </button>
+          </div>
         </form>
       </Container>
     </FormContainer>

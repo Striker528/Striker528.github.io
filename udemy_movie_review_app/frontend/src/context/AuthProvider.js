@@ -18,6 +18,7 @@ export default function AuthProvider({ children }) {
   const handleLogin = async (email, password) => {
     //if we want to render anything in the isPending state we can now
     setAuthInfo({ ...authInfo, isPending: true });
+    //making singin request to backend api with this email and password
     const { error, user } = await signInUser({ email, password });
     if (error) {
       updateNotification("error", error);
@@ -34,10 +35,12 @@ export default function AuthProvider({ children }) {
     localStorage.setItem("auth-token", user.token);
   };
 
+  //won't accept anything because what we want is already in the local storage
   const isAuth = async () => {
     const token = localStorage.getItem("auth-token");
     if (!token) return;
 
+    //check if user is a valid user or not
     setAuthInfo({ ...authInfo, isPending: true });
     const { error, user } = await getIsAuth(token);
     if (error) {
@@ -53,6 +56,7 @@ export default function AuthProvider({ children }) {
     });
   };
 
+  //to log out, simply remove the token in the user's browser
   const handleLogout = () => {
     localStorage.removeItem("auth-token");
     setAuthInfo({ ...defaultAuthInfo });
@@ -62,7 +66,6 @@ export default function AuthProvider({ children }) {
     isAuth();
   }, []);
 
-  //  handleLogout
   return (
     <AuthContext.Provider
       value={{ authInfo, handleLogin, handleLogout, isAuth }}

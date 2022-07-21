@@ -14,6 +14,8 @@ const {
     resetPassword,
     signIn
 } = require('../controllers/user');
+const { sendError } = require('../utils/helper');
+const { isAuth } = require('../middlewares/auth');
 
 const router = express.Router()
 
@@ -70,5 +72,13 @@ router.post("/reset-password", validatePassword, validate, isValidPassResetToken
 //router.get
 //post: get data from front-end
 //router.post
+
+//check if the given user is authenicated or not 
+router.get('/is-auth', isAuth, (req, res) => {
+    const { user } = req;
+    res.json({
+        user: { id: user._id, name: user.name, email: user.email, isVerified: user.isVerified }
+    });
+});
 
 module.exports = router;
