@@ -94,7 +94,6 @@ exports.verifyEmail = async (req, res) => {
     if (!user) {
         return sendError(res, "User not found", 404);
     };
-
     if (user.isVerified) {
         return sendError(res, "User is already verified");
     };
@@ -124,10 +123,13 @@ exports.verifyEmail = async (req, res) => {
         html: '<h1>Welcome to our app and tanks for choosing us</h1>'
     })
 
-    res.json({ message: "Your email is verified." })
-    //return sendError(res, "Your email is verified.", 201);
-
-}
+    //just sign them in if they successful sign up
+    const jwtToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
+    res.json({
+        user: { id: user._id, name: user.name, email: user.email, token: jwtToken },
+        message: "Your email is verified.",
+    });
+};
 
 //remember, if using await inside function, need async in the declaration
 exports.resendEmailVerificationToken = async (req, res) => {

@@ -16,6 +16,7 @@ export default function AuthProvider({ children }) {
   const { updateNotification } = useNotification();
 
   const handleLogin = async (email, password) => {
+    //if we want to render anything in the isPending state we can now
     setAuthInfo({ ...authInfo, isPending: true });
     const { error, user } = await signInUser({ email, password });
     if (error) {

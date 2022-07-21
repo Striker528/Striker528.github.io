@@ -9,7 +9,7 @@ import ConfirmPassword from './components/auth/ConfirmPassword';
 import NotFound from './components/NotFound';
 
 import {
-    BrowserRouter,
+    //BrowserRouter,
     Routes,
     Route,
 } from "react-router-dom";

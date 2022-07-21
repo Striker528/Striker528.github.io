@@ -2,14 +2,23 @@ import React, { createContext, useState } from "react";
 
 export const NotificationContext = createContext();
 
+//if the user repeatably submits with an error, don't reload the notification
 let timeoutId;
 export default function NotificationProvider({ children }) {
+  //console.log("In function")
   const [notification, setNotification] = useState("");
   const [classes, setClasses] = useState("");
 
+  //update any type of notification
+  //value: value we want to render in the paragraph at the bottom of this file
   const updateNotification = (type, value) => {
+    //if the timeoutId already exists (user just hit submit with an error)
+    //then the setTimeout function will not run
     if (timeoutId) clearTimeout(timeoutId);
 
+    //using the inputted type
+    //set the classes State which will be used in rendering in the return statement below
+    //either red, green or orange
     switch (type) {
       case "error":
         setClasses("bg-red-500");
@@ -30,6 +39,7 @@ export default function NotificationProvider({ children }) {
     }, 3000);
   };
 
+  //if there is a notification, then render:: {notification && ()}
   return (
     <NotificationContext.Provider value={{ updateNotification }}>
       {children}

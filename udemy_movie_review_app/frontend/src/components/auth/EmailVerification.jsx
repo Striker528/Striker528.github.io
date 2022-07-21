@@ -1,13 +1,14 @@
 import React, { useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Container from "../Container";
-import FormInput from '../form/FormInput';
+//import FormInput from '../form/FormInput';
 import Title from "../form/Title";
 import Submit from "../form/Submit";
 import { useEffect, useState } from 'react';
 import FormContainer from '../form/FormContainer';
 import { commonModalClasses } from '../../utils/theme';
 import { verifyUserEmail } from '../../api/auth';
+import { useNotification } from '../../hooks';
 
 const OTP_LENGTH = 6;
 
@@ -59,20 +60,22 @@ export default function EmailVerification() {
   //then pass this reference to the ref hook in the otp.map(()) below
   const inputRef = useRef();
 
+  const {updateNotification} = useNotification()
+
   //when want to verify email, use the user, which is inside the state
   const { state } = useLocation();
-  console.log("State1 is:")
-  console.log(state);
+  //console.log("State1 is:")
+  //console.log(state);
   //user will have user._id
   //need to save the user_id and OTP
   //initially, state will have nothing in it, so need to give the optional parameter of ?
   //which means, if there is a state, take the user component
   //if no state, continue on
   const user = state?.user;
-  console.log("State2 is:")
-  console.log(state)
-  console.log("User is:")
-  console.log(user)
+  //console.log("State2 is:")
+  //console.log(state)
+  //console.log("User is:")
+  //console.log(user)
 
   //for manual navigation
   const navigate = useNavigate();
@@ -145,7 +148,8 @@ export default function EmailVerification() {
     e.preventDefault()
 
     if (!isValidOTP(otp)) {
-      return console.log('invalid OTP');
+      //return console.log('invalid OTP');
+      return updateNotification("error", "invalid OTP")
     }
 
     //submit otp
@@ -153,11 +157,19 @@ export default function EmailVerification() {
     //console.log(otp);
     //if look at backend/controller/user.js and look at the verifyEmail function
     //see that we get back the message at the very bottom
-    const { error, message }= await verifyUserEmail({ userId: user.id, OTP: otp });
+    //cannot just sent OTP like: OTP: otp without any changes as it is in array form
+    //since the OTP must be a string or a hash
+    //so do: OTP: otp.join('') to join all the values in the array to a string
+    const { error, message } = await verifyUserEmail({
+      userId: user.id,
+      OTP: otp.join("")
+    });
   
-    if (error) return console.log(error)
+    //if (error) return console.log(error)
+    if(error) return updateNotification('error', error)
     
-    console.log(message);
+    //console.log(message);
+    updateNotification('success', message)
   }
 
   //hook
@@ -186,7 +198,8 @@ export default function EmailVerification() {
       navigate('/not-found')
     }
     //do this if the user is changed
-  }, [user]);
+  //}, [user]);
+  }, [user, navigate]);
   //*/
 
 

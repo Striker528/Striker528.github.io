@@ -23,7 +23,8 @@ export const verifyUserEmail = async (userInfo) => {
         //remember that client already has the beginning '/api' part
         const { data } = await client.post("/user/verify-email", userInfo);
         return data;
-  } catch (error) {
+    } catch (error) {
+      //console.log(error.response?.data);
     const { response } = error;
     if (response?.data) return response.data;
 
