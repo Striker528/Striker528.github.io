@@ -38,6 +38,10 @@ app.use(morgan('dev'))
 //send to: '/api/user-create'
 app.use('/api/user', userRouter);
 
+//Now need to set up the actor
+const actorRouter = require('./routes/actor');
+app.use('/api/actor', actorRouter);
+
 
 //with multiple routes with 404 errors
 //if the app does not find any route matching above (/api/user) use: /*

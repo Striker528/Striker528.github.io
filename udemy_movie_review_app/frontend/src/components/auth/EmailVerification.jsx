@@ -218,7 +218,7 @@ export default function EmailVerification() {
     }
     if (isLoggedIn && isVerified) navigate("/");
     //do this if the user is changed
-  }, [user, isLoggedIn]);
+  }, [user, isLoggedIn, isVerified]);
   //}, [user, navigate]);
   //*/
 
