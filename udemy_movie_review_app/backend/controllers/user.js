@@ -266,11 +266,11 @@ exports.signIn = async (req, res, next) => {
 
     //email that we want to use is the same name as the 'email' we are getting
     //so if I put 'email' in the {} below, it would give an error as an 'email' already exists in the req.body
-    const { _id, name } = user;
+    const { _id, name, role, isVerified } = user;
 
     //1st is payload
     const jwtToken = jwt.sign({ userId: _id }, process.env.JWT_SECRET);
 
-    res.json({user: {id: _id, name, email, token: jwtToken, isVerified}})
+    res.json({user: {id: _id, name, email, role, token: jwtToken, isVerified}})
     
 };

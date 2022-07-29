@@ -2,14 +2,19 @@ const { sendError } = require("../utils/helper")
 const jwt = require("jsonwebtoken")
 const User = require("../models/user")
 
-exports.isAuth = async (req, re, next) => {
+//just checking if the user is authenciated or not
+exports.isAuth = async (req, res, next) => {
     //console.log(req.headers.authorization)
     const token = req.headers?.authorization
     //console.log(token);
 
+    //if no token, do not want to move forward
+    if (!token) {
+        return sendError(res, 'Invalid token');
+    }
     const jwtToken = token.split("Bearer ")[1]
 
-    if (!jwtToken) return sendError(res, 'Invalid token')
+    if (!jwtToken) return sendError(res, 'Invalid token');
     const decode = jwt.verify(jwtToken, process.env.JWT_SECRET)
     //res.json({ jwtRes });
     const { userId } = decode;
@@ -25,4 +30,15 @@ exports.isAuth = async (req, re, next) => {
     //now can acces the user in req.user
     req.user = user;
     next()
+}
+
+
+exports.isAdmin = (req, res, next) => {
+    const { user } = req;
+
+    if (user.role !== 'admin') {
+        return sendError(res, 'unauthorized access');
+    }
+    
+    next();
 }

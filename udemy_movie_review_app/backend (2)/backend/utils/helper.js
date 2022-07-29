@@ -36,7 +36,3 @@ exports.formatActor = (actor) => {
     avatar: avatar?.url,
   };
 };
-
-exports.handleNotFound = (req, res) => {
-  this.sendError(res, "Not found", 404);
-};

@@ -42,6 +42,10 @@ app.use('/api/user', userRouter);
 const actorRouter = require('./routes/actor');
 app.use('/api/actor', actorRouter);
 
+//Now need to set up the movies
+const movieRouter = require("./routes/movie");
+app.use('/api/movie', movieRouter);
+
 
 //with multiple routes with 404 errors
 //if the app does not find any route matching above (/api/user) use: /*

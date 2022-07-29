@@ -35,7 +35,7 @@ exports.createActor = async (req, res) => {
     
     //res.send('ok')
     //res.status(201).json(newActor)
-    res.status(201).json(formatActor(actor));
+    res.status(201).json(formatActor(newActor));
 };
 
 //update
