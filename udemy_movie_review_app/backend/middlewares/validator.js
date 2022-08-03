@@ -98,24 +98,29 @@ exports.validateMovie = [
         try {
           const result = new URL(url);
           if (!result.protocol.includes("http"))
-            throw Error("Trailer url is invalid!");
+            throw Error("Trailer url is invalid, need https or http!");
   
           const arr = url.split("/");
           const publicId = arr[arr.length - 1].split(".")[0];
+
+          //console.log("publicId that I need is:")
+          //console.log(publicId)
+          //console.log("public_id that I need is:")
+          //console.log(public_id)
   
           if (public_id !== publicId)
             throw Error("Trailer public_id is invalid!");
   
           return true;
         } catch (error) {
-          throw Error("Trailer url is invalid!");
+          throw Error("Trailer url is invalid, at the end!");
         }
       }),
-    check("poster").custom((_, { req }) => {
-      if (!req.file) throw Error("Poster file is missing!");
+    // check("poster").custom((_, { req }) => {
+    //   if (!req.file) throw Error("Poster file is missing!");
   
-      return true;
-    }),
+    //   return true;
+    // }),
 ];
   
 
@@ -123,9 +128,11 @@ exports.validateMovie = [
 exports.validate = (req, res, next) => {
     const error = validationResult(req).array()
     //console.log(error)
+  //console.log("In validate function")
     if (error.length) {
         return res.json({error: error[0].msg})
-    }
+  }
+  //console.log("Passed validate in validate function")
 
     next();
 };

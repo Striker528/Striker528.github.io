@@ -27,6 +27,7 @@ const genres = [
   "Thriller",
   "War",
   "Western",
+  "Science-Fantasy"
 ];
 
 module.exports = genres;
