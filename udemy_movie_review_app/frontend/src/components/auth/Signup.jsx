@@ -40,6 +40,8 @@ export default function Signup() {
 
     //destructure from inside userInfo
     const { name, email, password } = userInfo
+    //console.log("Desconstrucing from inside userInfo, Email is:")
+    //console.log(email)
 
     //navigating around manually
     const navigate = useNavigate()
@@ -52,7 +54,8 @@ export default function Signup() {
     const handleChange = ({ target }) => {
         //destructure
         const { value, name } = target
-        setUserInfo({...userInfo, [name]: value})
+        setUserInfo({ ...userInfo, [name]: value })
+        //console.log("In handleChange for Signup:")
         //console.log(target.value, target.name);
     }
 

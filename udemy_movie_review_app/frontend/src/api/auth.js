@@ -1,10 +1,12 @@
 import client from "./client";
 
 export const createUser = async (userInfo) => {
-    //user info has name, email, and password
-    try {
-      //have to go to /user/create
-        //cannot go to /user/signup as that will give a bad error
+  //user info has name, email, and password
+  try {
+    //have to go to /user/create
+    //cannot go to /user/signup as that will give a bad error
+    //console.log("In createUser")
+    //console.log(userInfo)
     const { data } = await client.post("/user/create", userInfo);
     return data;
   } catch (error) {

@@ -13,6 +13,8 @@ const { sendError, generateRandomByte } = require('../utils/helper');
 exports.create = async (req, res) => {
     //console.log(req.body)
     const { name, email, password } = req.body
+    //console.log("Email sent to backend is:")
+    //console.log(email)
 
     //prevent duplicate users
     //anything done in the database is asynchronous
@@ -126,7 +128,14 @@ exports.verifyEmail = async (req, res) => {
     //just sign them in if they successful sign up
     const jwtToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
     res.json({
-        user: { id: user._id, name: user.name, email: user.email, token: jwtToken, isVerified: user.isVerified },
+        user: {
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            token: jwtToken,
+            isVerified: user.isVerified,
+            role: user.role
+        },
         message: "Your email is verified.",
     });
 };
@@ -271,6 +280,6 @@ exports.signIn = async (req, res, next) => {
     //1st is payload
     const jwtToken = jwt.sign({ userId: _id }, process.env.JWT_SECRET);
 
-    res.json({user: {id: _id, name, email, role, token: jwtToken, isVerified}})
+    res.json({user: {id: _id, name, email, role, token: jwtToken, isVerified, role}})
     
 };

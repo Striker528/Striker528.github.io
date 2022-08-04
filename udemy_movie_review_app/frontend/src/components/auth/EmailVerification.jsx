@@ -57,7 +57,8 @@ export default function EmailVerification() {
 
   const { isAuth, authInfo } = useAuth()
   const { isLoggedIn, profile } = authInfo;
-  const { isVerified } = profile?.isVerified;
+  //don't decontrsuct isVerified, make it a normal variable
+  const isVerified  = profile?.isVerified;
 
   //creating input
   //use useRef to create a reference

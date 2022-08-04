@@ -58,11 +58,13 @@ export default function Signin() {
         handleLogin(userInfo.email, userInfo.password)
     }
 
-    useEffect(() => {
-        //we want to move our user somewhere else
-        //so need useNavigate hook
-        if(isLoggedIn) navigate('/')
-    }, [isLoggedIn])
+    //navigating to the home route already in auth provider
+    //so this is completley useless
+    // useEffect(() => {
+    //     //we want to move our user somewhere else
+    //     //so need useNavigate hook
+    //     if(isLoggedIn) navigate('/')
+    // }, [isLoggedIn])
 
     //const theme = useContext(ThemeContext);
     //console.log(theme);

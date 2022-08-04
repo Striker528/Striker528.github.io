@@ -13,8 +13,20 @@ import {
     Routes,
     Route,
 } from "react-router-dom";
+import { useAuth } from './hooks';
+import AdminNavigator from './navigator/AdminNavigator';
 
 export default function App() {
+    const { authInfo } = useAuth()
+    //console.log(authInfo);
+    //get the role from the res.json we sent back in the backend
+    const isAdmin = authInfo.profile?.role === 'admin'
+    //console.log(isAdmin);
+
+    if (isAdmin) {
+        return <AdminNavigator />
+    }
+
     return (
         //when rendering multiple things, wrap inside fragments
         //empty fragments = <>
