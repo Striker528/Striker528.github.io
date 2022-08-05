@@ -10,6 +10,9 @@ export default function MovieUpload() {
   const [videoUploaded, setVideoUploaded] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [videoInfo, setVideoInfo] = useState({});
+  
+  /*
+  An example, can't use this
   const [movieInfo, setMovieInfo] = useState({
     title: "",
     storyLine: "",
@@ -28,6 +31,7 @@ export default function MovieUpload() {
       public_id: "",
     },
   });
+  */
   const { updateNotification } = useNotification();
 
   const handleTypeError = (error) => {
@@ -35,14 +39,23 @@ export default function MovieUpload() {
   };
 
   const handleUploadTrailer = async (data) => {
-    const { error, url, public_id } = await uploadTrailer(
-      data,
-      setUploadProgress
-    );
+    //have to pass in data as Form Data
+    //backend is sending the error if there is one, the url, and public_id
+    const { error, url, public_id } = await uploadTrailer(data, setUploadProgress);
     if (error) return updateNotification("error", error);
 
     setVideoUploaded(true);
     setVideoInfo({ url, public_id });
+
+    /*
+    If have 
+    setMovieInfo({ ...movieInfo, trailer: {url, public_id}});
+    so say we first sent in the movie to be uploaded
+    then started filling in files like title, storyline, etc
+    as soon as the trailer would be uploaded, it would be sent to this 
+    setMovieINfo function and as we have not submitted the rest of the form, the rest would be blank
+    no title, no storyline, nothing you filled in
+    */
   };
 
   const handleChange = (file) => {
@@ -62,9 +75,27 @@ export default function MovieUpload() {
   };
 
   return (
-    <div className="fixed inset-0 dark:bg-white dark:bg-opacity-50 bg-primary bg-opacity-50 backdrop-blur-sm flex items-center justify-center">
-      <div className="dark:bg-primary bg-white rounded w-[45rem] h-[40rem] overflow-auto p-2 custom-scroll-bar">
-        {/* <UploadProgress
+    <div className="
+      fixed inset-0
+      dark:bg-white
+      dark:bg-opacity-50
+      bg-primary
+      bg-opacity-50
+      backdrop-blur-sm
+      flex items-center
+      justify-center"
+    >
+      <div className="
+        dark:bg-primary
+        bg-white
+        rounded 
+        w-[45rem]
+        h-[40rem]
+        overflow-auto
+        p-2
+        custom-scroll-bar"
+      >
+        <UploadProgress
           visible={!videoUploaded && videoSelected}
           message={getUploadProgressValue()}
           width={uploadProgress}
@@ -73,7 +104,7 @@ export default function MovieUpload() {
           visible={!videoSelected}
           onTypeError={handleTypeError}
           handleChange={handleChange}
-        /> */}
+        /> 
 
         <MovieForm />
       </div>
@@ -84,8 +115,15 @@ export default function MovieUpload() {
 const TrailerSelector = ({ visible, handleChange, onTypeError }) => {
   if (!visible) return null;
 
+  //for fileuploader, can submit the children that you want to show, between the 
+  //<FileUploader> (children here) </FileUploader>
   return (
-    <div className="h-full flex items-center justify-center">
+    <div className="
+      h-full
+      flex
+      items-center
+      justify-center"
+    >
       <FileUploader
         handleChange={handleChange}
         onTypeError={onTypeError}
@@ -105,7 +143,8 @@ const TrailerSelector = ({ visible, handleChange, onTypeError }) => {
           justify-center
           dark:text-dark-subtle
           text-secondary
-          cursor-pointer">
+          cursor-pointer"
+        >
           <AiOutlineCloudUpload size={80} />
           <p>Drop your file here!</p>
         </div>
@@ -118,14 +157,34 @@ const UploadProgress = ({ width, message, visible }) => {
   if (!visible) return null;
 
   return (
-    <div className="dark:bg-secondary bg-white drop-shadow-lg rounded p-3">
-      <div className="relative h-3 dark:bg-dark-subtle bg-light-subtle overflow-hidden">
+    <div className="
+      dark:bg-secondary
+      bg-white drop-shadow-lg
+      rounded
+      p-3"
+    >
+      <div className="
+        relative h-3
+        dark:bg-dark-subtle
+        bg-light-subtle
+        overflow-hidden"
+      >
         <div
           style={{ width: width + "%" }}
-          className="h-full absolute left-0 dark:bg-white bg-secondary"
+          className="
+            h-full absolute 
+            left-0 
+            dark:bg-white 
+            bg-secondary"
         />
       </div>
-      <p className="font-semibold dark:text-dark-subtle text-light-subtle animate-pulse mt-1">
+      <p className="
+        font-semibold
+        dark:text-dark-subtle
+        text-light-subtle
+        animate-pulse
+        mt-1"
+      >
         {message}
       </p>
     </div>

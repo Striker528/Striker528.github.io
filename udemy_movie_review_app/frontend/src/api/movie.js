@@ -8,6 +8,9 @@ export const uploadTrailer = async (formData, onUploadProgress) => {
         authorization: "Bearer " + token,
         "content-type": "multipart/form-data",
       },
+      //pass another method
+      //is this how much we upload to the backend server, not to cloundary 
+      //or whomever hosts the videos
       onUploadProgress: ({ loaded, total }) => {
         if (onUploadProgress)
           onUploadProgress(Math.floor((loaded / total) * 100));

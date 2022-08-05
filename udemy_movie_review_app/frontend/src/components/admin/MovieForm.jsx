@@ -59,7 +59,12 @@ export const results = [
 
 export const renderItem = (result) => {
   return (
-    <div key={result.id} className="flex space-x-2 rounded overflow-hidden">
+    <div key={result.id} className="
+      flex
+      space-x-2
+      rounded
+      overflow-hidden"
+    >
       <img
         src={result.avatar}
         alt={result.name}
@@ -344,7 +349,10 @@ const Label = ({ children, htmlFor }) => {
   return (
     <label
       htmlFor={htmlFor}
-      className="dark:text-dark-subtle text-light-subtle font-semibold"
+      className="
+        dark:text-dark-subtle 
+        text-light-subtle 
+        font-semibold"
     >
       {children}
     </label>
@@ -355,7 +363,23 @@ const LabelWithBadge = ({ children, htmlFor, badge = 0 }) => {
   const renderBadge = () => {
     if (!badge) return null;
     return (
-      <span className="dark:bg-dark-subtle bg-light-subtle text-white absolute top-0 right-0 translate-x-2 -translate-y-1 text-xs w-5 h-5 rounded-full flex justify-center items-center">
+      <span className="
+        dark:bg-dark-subtle
+        bg-light-subtle
+        text-white
+        absolute
+        top-0
+        right-0
+        translate-x-2
+        -translate-y-1
+        text-xs
+        w-5
+        h-5
+        rounded-full
+        flex
+        justify-center
+        items-center"
+      >
         {badge <= 9 ? badge : "9+"}
       </span>
     );
