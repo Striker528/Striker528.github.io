@@ -57,6 +57,7 @@ export const results = [
   },
 ];
 
+//rendering each character for the writer and direction portions
 export const renderItem = (result) => {
   return (
     <div key={result.id} className="
