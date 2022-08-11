@@ -132,6 +132,8 @@ const SearchResults = ({
 
   //with className = "absolute", can put it anywhere in the "realative" div
   //rendering the results below
+  //small problem where the drop down does not completely cover the writer field
+    // so need to add the z index
   return (
     <div className="
       absolute
@@ -155,6 +157,9 @@ const SearchResults = ({
             : "dark:bg-dark-subtle bg-light-subtle";
         };
 
+        //in the future, won't have result.id for the key as we will passing in what we get back from MongoDB
+        //already have the index
+        //so key becomes {index.toString()}
         return (
           <ResultCard
             ref={index === focusedIndex ? resultContainer : null}

@@ -14,6 +14,9 @@ export default function TagsInput({ name, value, onChange }) {
     const { value } = target;
     if (value !== ",") setTag(value);
 
+    //this handleOnChange will fire whenever the user changes something in the tag input field
+    //once we set the tag, now call the normal handleOnChange function that we give to TagsInput
+    //and this function that we pass (onChange) will then fill in the movieForm with the tags
     onChange(tags);
   };
 

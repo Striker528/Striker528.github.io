@@ -4,7 +4,7 @@ import { commonInputClasses } from "../../utils/theme";
 import Submit from "../form/Submit";
 import LiveSearch from "../LiveSearch";
 import TagsInput from "../TagsInput";
-import ModalContainer from "../modals/ModalContainer";
+//import ModalContainer from "../modals/ModalContainer";
 import WritersModal from "../modals/WritersModal";
 import CastForm from "../form/CastForm";
 import CastModal from "../modals/CastModal";
@@ -92,7 +92,11 @@ const defaultMovieInfo = {
 };
 
 export default function MovieForm() {
+  //default state
+  //movieInfo will be very big, store it in variable defaultMovieInfo
   const [movieInfo, setMovieInfo] = useState({ ...defaultMovieInfo });
+  //states to show the different models
+  //like global states that can be changed to show or not show the models for the writer and others
   const [showWritersModal, setShowWritersModal] = useState(false);
   const [showCastModal, setShowCastModal] = useState(false);
   const [showGenresModal, setShowGenresModal] = useState(false);
@@ -117,14 +121,19 @@ export default function MovieForm() {
       updatePosterForUI(poster);
       return setMovieInfo({ ...movieInfo, poster });
     }
+    //...movieInfo: spread all of the movie info here
     setMovieInfo({ ...movieInfo, [name]: value });
   };
 
   const updateTags = (tags) => {
+    //in the TagsInput.jsx file, already have the handleOnChange
+    //that method will fire whenever we make any changes in the input field
     setMovieInfo({ ...movieInfo, tags });
   };
 
   const updateDirector = (profile) => {
+    //just like the rest of the updating
+    //fill in the movieInfo's director field with what the user submitted (profile)
     setMovieInfo({ ...movieInfo, director: profile });
   };
 
@@ -138,6 +147,8 @@ export default function MovieForm() {
   };
 
   const updateWriters = (profile) => {
+    //handling multiple writers
+    //not multiple of the same writer
     const { writers } = movieInfo;
     for (let writer of writers) {
       if (writer.id === profile.id) {
@@ -148,6 +159,8 @@ export default function MovieForm() {
       }
     }
 
+    //fill in the movieInfo with the array of writers the user submitted
+    // ...writers: spread all of the old writers and add the new profile
     setMovieInfo({ ...movieInfo, writers: [...writers, profile] });
   };
 
@@ -176,8 +189,12 @@ export default function MovieForm() {
   };
 
   const handleWriterRemove = (profileId) => {
+    //1st destructure the writers from the movieInfo
     const { writers } = movieInfo;
+    //creating newWriters
+    //if the id === profileId, then it will be exclude from the writers
     const newWriters = writers.filter(({ id }) => id !== profileId);
+    //if we remove all the writers, hide the model
     if (!newWriters.length) hideWritersModal();
     setMovieInfo({ ...movieInfo, writers: [...newWriters] });
   };
@@ -189,6 +206,7 @@ export default function MovieForm() {
     setMovieInfo({ ...movieInfo, cast: [...newCast] });
   };
 
+  //destructure what we want
   const {
     title,
     storyLine,
@@ -205,6 +223,7 @@ export default function MovieForm() {
     <>
       <div className="flex space-x-3">
         <div className="w-[70%] space-y-5">
+
           <div>
             <Label htmlFor="title">Title</Label>
             <input
@@ -360,6 +379,7 @@ const Label = ({ children, htmlFor }) => {
   );
 };
 
+//creating the notification of how many writers that were selected
 const LabelWithBadge = ({ children, htmlFor, badge = 0 }) => {
   const renderBadge = () => {
     if (!badge) return null;
@@ -371,7 +391,7 @@ const LabelWithBadge = ({ children, htmlFor, badge = 0 }) => {
         absolute
         top-0
         right-0
-        translate-x-2
+        translate-x-6
         -translate-y-1
         text-xs
         w-5

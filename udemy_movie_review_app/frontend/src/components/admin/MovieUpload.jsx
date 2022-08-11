@@ -74,6 +74,7 @@ export default function MovieUpload() {
     return `Upload progress ${uploadProgress}%`;
   };
 
+  //adding in the custom scroll bar (custom-scroll-bar)
   return (
     <div className="
       fixed inset-0
