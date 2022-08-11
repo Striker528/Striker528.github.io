@@ -2,12 +2,17 @@ import React from "react";
 import { AiOutlineCheck, AiOutlineClose } from "react-icons/ai";
 import ModalContainer from "./ModalContainer";
 
+//pretty much everything is the same as the WritersModal, except a few things
 export default function CastModal({
+  //instead of profiles = [], it should be casts = []
   casts = [],
   visible,
   onClose,
   onRemoveClick,
 }) {
+  //not profile.map, casts.map
+  //in CastForm, defaultCastInfo is profile, roseAs, leadActor
+  //need to get the name, avatar, and id from the profile
   return (
     <ModalContainer ignoreContainer onClose={onClose} visible={visible}>
       <div className="space-y-2 dark:bg-primary bg-white rounded max-w-[45rem] max-h-[40rem] overflow-auto p-2 custom-scroll-bar">

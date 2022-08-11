@@ -5,6 +5,7 @@ import { renderItem, results } from "../admin/MovieForm";
 import LiveSearch from "../LiveSearch";
 
 // const cast = [{ actor: id, roleAs: "", leadActor: true }];
+//base object
 const defaultCastInfo = {
   profile: {},
   roleAs: "",
@@ -16,6 +17,7 @@ export default function CastForm({ onSubmit }) {
   const { updateNotification } = useNotification();
 
   const handleOnChange = ({ target }) => {
+    //put everything in the castInfo, for now to store all the actors
     const { checked, name, value } = target;
 
     if (name === "leadActor")
@@ -29,6 +31,7 @@ export default function CastForm({ onSubmit }) {
   };
 
   const handleSubmit = (e) => {
+    //now send all the actor we stored to the big movie form
     e.preventDefault();
     const { profile, roleAs } = castInfo;
     if (!profile.name)
@@ -40,13 +43,19 @@ export default function CastForm({ onSubmit }) {
     setCastInfo({ ...defaultCastInfo });
   };
 
+  //need to destructure these values
+  //after the input, render the LiveSearch
+
+  //when hover over the check box, it will print out "Set as lead actor"
   const { leadActor, profile, roleAs } = castInfo;
   return (
     <div className="flex items-center space-x-2">
       <input
         type="checkbox"
         name="leadActor"
-        className="w-4 h-4"
+        className="
+          w-4 
+          h-4"
         checked={leadActor}
         onChange={handleOnChange}
         title="Set as lead actor"
@@ -58,7 +67,11 @@ export default function CastForm({ onSubmit }) {
         onSelect={handleProfileSelect}
         renderItem={renderItem}
       />
-      <span className="dark:text-dark-subtle text-light-subtle font-semibold">
+      <span className="
+        dark:text-dark-subtle
+        text-light-subtle
+        font-semibold"
+      >
         as
       </span>
 

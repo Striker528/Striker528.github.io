@@ -139,6 +139,7 @@ export default function MovieForm() {
 
   const updateCast = (castInfo) => {
     const { cast } = movieInfo;
+    //remember that cast is an array
     setMovieInfo({ ...movieInfo, cast: [...cast, castInfo] });
   };
 
@@ -200,6 +201,7 @@ export default function MovieForm() {
   };
 
   const handleCastRemove = (profileId) => {
+    //same as handleWritersRemove
     const { cast } = movieInfo;
     const newCast = cast.filter(({ profile }) => profile.id !== profileId);
     if (!newCast.length) hideCastModal();
@@ -219,6 +221,14 @@ export default function MovieForm() {
     language,
     status,
   } = movieInfo;
+
+  //For writers and actors, only make the boxes visible if there are any inputted actors or directors
+  //so visible is true if there is some length to the writers or the actors
+
+  //old, everything to be on a form
+  //whenever hit enter, onSubmit={handlesubmit} would fire == bad
+  //just put everything in a div
+  //now need to rely on the submit button we created (src/components/form/Submit.jsx)
   return (
     <>
       <div className="flex space-x-3">
@@ -382,6 +392,7 @@ const Label = ({ children, htmlFor }) => {
 //creating the notification of how many writers that were selected
 const LabelWithBadge = ({ children, htmlFor, badge = 0 }) => {
   const renderBadge = () => {
+    //if there are no people submitted, don't show 0, show nothing
     if (!badge) return null;
     return (
       <span className="
@@ -414,8 +425,10 @@ const LabelWithBadge = ({ children, htmlFor, badge = 0 }) => {
   );
 };
 
+//hide this button if there are no inputted people
 const ViewAllBtn = ({ visible, children, onClick }) => {
   if (!visible) return null;
+  //when using multiple buttons in a single form, need to specify it's type
   return (
     <button
       onClick={onClick}

@@ -42,6 +42,11 @@ export default function LiveSearch({
   };
 
   const handleSelection = (selectedItem) => {
+    //if just go into the form to enter the director and hit enter: crashes
+    //as the default state is -1, and so we pass -1 to the results, which is undefined
+    //very bad
+    //need this if check
+    //also need to close the drop down
     if (selectedItem) {
       onSelect(selectedItem);
       //once we select something, close the drop down and reset the index
