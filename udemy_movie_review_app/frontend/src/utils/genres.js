@@ -20,6 +20,7 @@ const genres = [
   "News",
   "Reality TV",
   "Romance",
+  "Science-Fantasy",
   "Sci-Fi",
   "Superhero",
   "Sport",
@@ -27,7 +28,6 @@ const genres = [
   "Thriller",
   "War",
   "Western",
-  "Science-Fantasy"
 ];
 
 export default genres;

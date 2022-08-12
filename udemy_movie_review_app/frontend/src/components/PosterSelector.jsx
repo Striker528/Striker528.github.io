@@ -9,6 +9,7 @@ export default function PosterSelector({
   selectedPoster,
   onChange,
 }) {
+  //if there is a selected Poster, render it, if not, redner the default PosterUI
   return (
     <div>
       <input

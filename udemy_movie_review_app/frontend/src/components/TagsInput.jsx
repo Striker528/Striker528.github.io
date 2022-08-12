@@ -1,7 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 
+//need to take the input "value", which is the specific tags that are inputted
 export default function TagsInput({ name, value, onChange }) {
+  //if we get the input "value", need to update these tags
   const [tag, setTag] = useState("");
   const [tags, setTags] = useState([]);
 
@@ -59,6 +61,7 @@ export default function TagsInput({ name, value, onChange }) {
     tagsInput.current.classList.remove("dark:border-white", "border-primary");
   };
 
+  //"value" is the dependency
   useEffect(() => {
     if (value.length) setTags(value);
   }, [value]);

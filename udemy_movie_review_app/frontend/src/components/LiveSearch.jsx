@@ -21,6 +21,9 @@ export default function LiveSearch({
   //using -1, as if we used 0, the very first option on the drop down list will be selected
   const [focusedIndex, setFocusedIndex] = useState(-1);
 
+  //state to edit the name after selection
+  const [defaultValue, setDefaultValue] = useState("");
+
   const handleOnFocus = () => {
     //so when we click on the box for people, and there are people in the database (passed in the function LiveSearch)
     //then we will show the options to click on
@@ -86,6 +89,21 @@ export default function LiveSearch({
       : commonInputClasses + " border-2 rounded p-1 text-lg";
   };
 
+  const handleChange = (e) => {
+    //update this default value
+    setDefaultValue(e.target.value);
+
+    //try onChange if it is not null
+    onChange && onChange(e)
+  };
+
+  //before, could not edit the director's name after selection == bad
+  //take value as dependency
+  useEffect(() => {
+    //new state
+    if (value) setDefaultValue(value)
+  }, [value]);
+
   return (
     <div className="relative">
       <input
@@ -97,8 +115,8 @@ export default function LiveSearch({
         onFocus={handleOnFocus}
         onBlur={handleOnBlur}
         onKeyDown={handleKeyDown}
-        value={value}
-        onChange={onChange}
+        value={defaultValue}
+        onChange={handleChange}
       />
       <SearchResults
         focusedIndex={focusedIndex}

@@ -4,6 +4,7 @@ import Submit from "../form/Submit";
 import ModalContainer from "./ModalContainer";
 
 export default function GenresModal({
+  //this is a drop down, so at times it is visible, other times it is not
   visible,
   previousSelection,
   onClose,
@@ -12,12 +13,19 @@ export default function GenresModal({
   const [selectedGenres, setSelectedGenres] = useState([]);
 
   const handleGenresSelector = (gen) => {
+    //passing in the genre
+    //function that allows the user to click on a genre to select it
+
     let newGenres = [];
 
+    //if already selected, need to remove the genre
     if (selectedGenres.includes(gen))
       newGenres = selectedGenres.filter((genre) => genre !== gen);
+    //else, add in the genres
+    //adding in the old genres
     else newGenres = [...selectedGenres, gen];
 
+    //add in all the new genres we just selected to the main list of genres
     setSelectedGenres([...newGenres]);
   };
 
@@ -27,6 +35,7 @@ export default function GenresModal({
   };
 
   const handleClose = () => {
+    //when we click out of the genre form, remove the selections that were made
     setSelectedGenres(previousSelection);
     onClose();
   };

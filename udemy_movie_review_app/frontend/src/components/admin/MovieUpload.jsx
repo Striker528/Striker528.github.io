@@ -3,9 +3,10 @@ import { FileUploader } from "react-drag-drop-files";
 import { AiOutlineCloudUpload } from "react-icons/ai";
 import { uploadTrailer } from "../../api/movie";
 import { useNotification } from "../../hooks";
+import ModalContainer from "../modals/ModalContainer";
 import MovieForm from "./MovieForm";
 
-export default function MovieUpload() {
+export default function MovieUpload({visible, onClose}) {
   const [videoSelected, setVideoSelected] = useState(false);
   const [videoUploaded, setVideoUploaded] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -76,26 +77,7 @@ export default function MovieUpload() {
 
   //adding in the custom scroll bar (custom-scroll-bar)
   return (
-    <div className="
-      fixed inset-0
-      dark:bg-white
-      dark:bg-opacity-50
-      bg-primary
-      bg-opacity-50
-      backdrop-blur-sm
-      flex items-center
-      justify-center"
-    >
-      <div className="
-        dark:bg-primary
-        bg-white
-        rounded 
-        w-[45rem]
-        h-[40rem]
-        overflow-auto
-        p-2
-        custom-scroll-bar"
-      >
+    <ModalContainer visible = {visible} onClose={onClose}>
         <UploadProgress
           visible={!videoUploaded && videoSelected}
           message={getUploadProgressValue()}
@@ -108,8 +90,7 @@ export default function MovieUpload() {
         /> 
 
         <MovieForm />
-      </div>
-    </div>
+      </ModalContainer>
   );
 }
 

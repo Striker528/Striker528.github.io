@@ -100,6 +100,7 @@ export default function MovieForm() {
   const [showWritersModal, setShowWritersModal] = useState(false);
   const [showCastModal, setShowCastModal] = useState(false);
   const [showGenresModal, setShowGenresModal] = useState(false);
+  //state for rendering the poster
   const [selectedPosterForUI, setSelectedPosterForUI] = useState("");
 
   const { updateNotification } = useNotification();
@@ -110,6 +111,7 @@ export default function MovieForm() {
   };
 
   const updatePosterForUI = (file) => {
+    //create a url for us and store it in setSelectedPosterForUI
     const url = URL.createObjectURL(file);
     setSelectedPosterForUI(url);
   };
@@ -117,6 +119,7 @@ export default function MovieForm() {
   const handleChange = ({ target }) => {
     const { value, name, files } = target;
     if (name === "poster") {
+      //need to destructure the file
       const poster = files[0];
       updatePosterForUI(poster);
       return setMovieInfo({ ...movieInfo, poster });
@@ -229,9 +232,15 @@ export default function MovieForm() {
   //whenever hit enter, onSubmit={handlesubmit} would fire == bad
   //just put everything in a div
   //now need to rely on the submit button we created (src/components/form/Submit.jsx)
+
+  //on the rhs, (30%), for GenresSelector, when we click on the button (rendered in the GenresSelector file),
+  //go to the function displayGenresModal which sets setShowGenresModal to true
+  //and once that is true, it goes down to GenresModal at the bottom and then that gets shown
+  //and that is the main meat and potatoes
   return (
     <>
       <div className="flex space-x-3">
+
         <div className="w-[70%] space-y-5">
 
           <div>
@@ -320,14 +329,20 @@ export default function MovieForm() {
 
           <Submit value="Upload" onClick={handleSubmit} type="button" />
         </div>
+
         <div className="w-[30%] space-y-5">
+
           <PosterSelector
             name="poster"
             onChange={handleChange}
             selectedPoster={selectedPosterForUI}
             accept="image/jpg, image/jpeg, image/png"
           />
-          <GenresSelector badge={genres.length} onClick={displayGenresModal} />
+          
+          <GenresSelector
+            badge={genres.length}
+            onClick={displayGenresModal}
+          />
 
           <Selector
             onChange={handleChange}
@@ -336,6 +351,7 @@ export default function MovieForm() {
             options={typeOptions}
             label="Type"
           />
+          
           <Selector
             onChange={handleChange}
             name="language"
