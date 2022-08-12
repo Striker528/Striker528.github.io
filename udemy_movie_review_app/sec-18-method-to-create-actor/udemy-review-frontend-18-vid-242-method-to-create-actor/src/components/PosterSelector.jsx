@@ -3,17 +3,14 @@ import React from "react";
 const commonPosterUI =
   "flex justify-center items-center border border-dashed rounded aspect-video dark:border-dark-subtle border-light-subtle cursor-pointer";
 
-  //for the actor's photo, don't want aspect-video
-  //want aspect-square, add that in className
 export default function PosterSelector({
   name,
   accept,
-  label,
+  lable,
   selectedPoster,
   className,
   onChange,
 }) {
-  //if there is a selected Poster, render it, if not, redner the default PosterUI
   return (
     <div>
       <input
@@ -27,26 +24,22 @@ export default function PosterSelector({
       <label htmlFor={name}>
         {selectedPoster ? (
           <img
-            className={commonPosterUI + " object-cover" + className}
+            className={commonPosterUI + " object-cover " + className}
             src={selectedPoster}
             alt=""
           />
         ) : (
-            <PosterUI label={label} className={className} />
+          <PosterUI className={className} label={lable} />
         )}
       </label>
     </div>
   );
 }
 
-//need to destructure the className
-const PosterUI = ({ label, className}) => {
-  //don't forget the space
+const PosterUI = ({ label, className }) => {
   return (
-    <div className={commonPosterUI + ' ' + className}>
-      <span className="dark:text-dark-subtle text-light-subtle">
-        {label}
-      </span>
+    <div className={commonPosterUI + " " + className}>
+      <span className="dark:text-dark-subtle text-light-subtle">{label}</span>
     </div>
   );
 };

@@ -142,7 +142,21 @@ const CreateOptions = ({ options, visible, onClose }) => {
     e.target.classList.remove("animate-scale");
   };
 
+  const handleClick = (fn) => {
+    //onClose is prompt
+    fn()
+    onClose()
+  }
+
   if (!visible) return null;
+  //showing the modal creation options
+  //instead of using onClick, wrap inside function
+  //inside function, create handleClick
+  //inside handleClick, pass onClick
+  //now once we click the option to create a movie, the options windows will auto close
+
+  //key needs to be unique for the options.map
+  //so need to add key={title}
   return (
     <div
       id={containerID}
@@ -162,7 +176,7 @@ const CreateOptions = ({ options, visible, onClose }) => {
       onAnimationEnd={handleAnimationEnd}
     >
       {options.map(({ title, onClick }) => {
-        return <Option onClick={onClick}>{title}</Option>;
+        return <Option key={title} onClick={() => handleClick(onClick)}>{title}</Option>;
       })}
     </div>
   );

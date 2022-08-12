@@ -1,22 +1,22 @@
 import React, { useState } from "react";
 import { useNotification } from "../../hooks";
-import { commonInputClasses } from "../../utils/theme";
-import Submit from "../form/Submit";
-import LiveSearch from "../LiveSearch";
-import TagsInput from "../TagsInput";
-//import ModalContainer from "../modals/ModalContainer";
-import WritersModal from "../modals/WritersModal";
-import CastForm from "../form/CastForm";
-import CastModal from "../modals/CastModal";
-import PosterSelector from "../PosterSelector";
-import GenresSelector from "../GenresSelector";
-import GenresModal from "../modals/GenresModal";
-import Selector from "../Selector";
 import {
   languageOptions,
   statusOptions,
   typeOptions,
 } from "../../utils/options";
+import { commonInputClasses } from "../../utils/theme";
+import CastForm from "../form/CastForm";
+import Submit from "../form/Submit";
+import GenresSelector from "../GenresSelector";
+import LiveSearch from "../LiveSearch";
+import CastModal from "../models/CastModal";
+import GenresModal from "../models/GenresModal";
+import ModalContainer from "../models/ModalContainer";
+import WritersModal from "../models/WritersModal";
+import PosterSelector from "../PosterSelector";
+import Selector from "../Selector";
+import TagsInput from "../TagsInput";
 
 export const results = [
   {
@@ -57,20 +57,10 @@ export const results = [
   },
 ];
 
-//rendering each character for the writer and direction portions
 export const renderItem = (result) => {
   return (
-    <div key={result.id} className="
-      flex
-      space-x-2
-      rounded
-      overflow-hidden"
-    >
-      <img
-        src={result.avatar}
-        alt={result.name}
-        className="w-16 h-16 object-cover"
-      />
+    <div className="flex rounded overflow-hidden">
+      <img src={result.avatar} alt="" className="w-16 h-16 object-cover" />
       <p className="dark:text-white font-semibold">{result.name}</p>
     </div>
   );
@@ -92,16 +82,11 @@ const defaultMovieInfo = {
 };
 
 export default function MovieForm() {
-  //default state
-  //movieInfo will be very big, store it in variable defaultMovieInfo
   const [movieInfo, setMovieInfo] = useState({ ...defaultMovieInfo });
-  //states to show the different models
-  //like global states that can be changed to show or not show the models for the writer and others
   const [showWritersModal, setShowWritersModal] = useState(false);
   const [showCastModal, setShowCastModal] = useState(false);
-  const [showGenresModal, setShowGenresModal] = useState(false);
-  //state for rendering the poster
   const [selectedPosterForUI, setSelectedPosterForUI] = useState("");
+  const [showGenresModal, setShowGenresModal] = useState(false);
 
   const { updateNotification } = useNotification();
 
@@ -111,7 +96,6 @@ export default function MovieForm() {
   };
 
   const updatePosterForUI = (file) => {
-    //create a url for us and store it in setSelectedPosterForUI
     const url = URL.createObjectURL(file);
     setSelectedPosterForUI(url);
   };
@@ -119,30 +103,24 @@ export default function MovieForm() {
   const handleChange = ({ target }) => {
     const { value, name, files } = target;
     if (name === "poster") {
-      //need to destructure the file
       const poster = files[0];
       updatePosterForUI(poster);
       return setMovieInfo({ ...movieInfo, poster });
     }
-    //...movieInfo: spread all of the movie info here
+
     setMovieInfo({ ...movieInfo, [name]: value });
   };
 
   const updateTags = (tags) => {
-    //in the TagsInput.jsx file, already have the handleOnChange
-    //that method will fire whenever we make any changes in the input field
     setMovieInfo({ ...movieInfo, tags });
   };
 
   const updateDirector = (profile) => {
-    //just like the rest of the updating
-    //fill in the movieInfo's director field with what the user submitted (profile)
     setMovieInfo({ ...movieInfo, director: profile });
   };
 
   const updateCast = (castInfo) => {
     const { cast } = movieInfo;
-    //remember that cast is an array
     setMovieInfo({ ...movieInfo, cast: [...cast, castInfo] });
   };
 
@@ -151,8 +129,6 @@ export default function MovieForm() {
   };
 
   const updateWriters = (profile) => {
-    //handling multiple writers
-    //not multiple of the same writer
     const { writers } = movieInfo;
     for (let writer of writers) {
       if (writer.id === profile.id) {
@@ -162,9 +138,6 @@ export default function MovieForm() {
         );
       }
     }
-
-    //fill in the movieInfo with the array of writers the user submitted
-    // ...writers: spread all of the old writers and add the new profile
     setMovieInfo({ ...movieInfo, writers: [...writers, profile] });
   };
 
@@ -193,25 +166,19 @@ export default function MovieForm() {
   };
 
   const handleWriterRemove = (profileId) => {
-    //1st destructure the writers from the movieInfo
     const { writers } = movieInfo;
-    //creating newWriters
-    //if the id === profileId, then it will be exclude from the writers
     const newWriters = writers.filter(({ id }) => id !== profileId);
-    //if we remove all the writers, hide the model
     if (!newWriters.length) hideWritersModal();
     setMovieInfo({ ...movieInfo, writers: [...newWriters] });
   };
 
   const handleCastRemove = (profileId) => {
-    //same as handleWritersRemove
     const { cast } = movieInfo;
     const newCast = cast.filter(({ profile }) => profile.id !== profileId);
     if (!newCast.length) hideCastModal();
     setMovieInfo({ ...movieInfo, cast: [...newCast] });
   };
 
-  //destructure what we want
   const {
     title,
     storyLine,
@@ -219,37 +186,24 @@ export default function MovieForm() {
     writers,
     cast,
     tags,
+    releseDate,
     genres,
     type,
     language,
     status,
   } = movieInfo;
 
-  //For writers and actors, only make the boxes visible if there are any inputted actors or directors
-  //so visible is true if there is some length to the writers or the actors
-
-  //old, everything to be on a form
-  //whenever hit enter, onSubmit={handlesubmit} would fire == bad
-  //just put everything in a div
-  //now need to rely on the submit button we created (src/components/form/Submit.jsx)
-
-  //on the rhs, (30%), for GenresSelector, when we click on the button (rendered in the GenresSelector file),
-  //go to the function displayGenresModal which sets setShowGenresModal to true
-  //and once that is true, it goes down to GenresModal at the bottom and then that gets shown
-  //and that is the main meat and potatoes
   return (
     <>
-      <div className="flex space-x-3">
-
+      <div onSubmit={handleSubmit} className="flex space-x-3">
         <div className="w-[70%] space-y-5">
-
           <div>
             <Label htmlFor="title">Title</Label>
             <input
+              id="title"
               value={title}
               onChange={handleChange}
               name="title"
-              id="title"
               type="text"
               className={
                 commonInputClasses + " border-b-2 font-semibold text-xl"
@@ -266,7 +220,7 @@ export default function MovieForm() {
               name="storyLine"
               id="storyLine"
               className={commonInputClasses + " border-b-2 resize-none h-24"}
-              placeholder="Movie story line..."
+              placeholder="Movie storyline..."
             ></textarea>
           </div>
 
@@ -275,19 +229,19 @@ export default function MovieForm() {
             <TagsInput value={tags} name="tags" onChange={updateTags} />
           </div>
 
-          <div>
+          <div className="">
             <Label htmlFor="director">Director</Label>
             <LiveSearch
               name="director"
-              value={director.name}
-              placeholder="Search profile"
               results={results}
+              placeholder="Search profile"
               renderItem={renderItem}
               onSelect={updateDirector}
+              value={director.name}
             />
           </div>
 
-          <div>
+          <div className="">
             <div className="flex justify-between">
               <LabelWithBadge badge={writers.length} htmlFor="writers">
                 Writers
@@ -301,8 +255,8 @@ export default function MovieForm() {
             </div>
             <LiveSearch
               name="writers"
-              placeholder="Search profile"
               results={results}
+              placeholder="Search profile"
               renderItem={renderItem}
               onSelect={updateWriters}
             />
@@ -325,25 +279,20 @@ export default function MovieForm() {
             className={commonInputClasses + " border-2 rounded p-1 w-auto"}
             onChange={handleChange}
             name="releseDate"
+            value={releseDate}
           />
 
           <Submit value="Upload" onClick={handleSubmit} type="button" />
         </div>
-
         <div className="w-[30%] space-y-5">
-
           <PosterSelector
             name="poster"
             onChange={handleChange}
             selectedPoster={selectedPosterForUI}
+            lable="Select poster"
             accept="image/jpg, image/jpeg, image/png"
-            label="Upload Poster"
           />
-          
-          <GenresSelector
-            badge={genres.length}
-            onClick={displayGenresModal}
-          />
+          <GenresSelector badge={genres.length} onClick={displayGenresModal} />
 
           <Selector
             onChange={handleChange}
@@ -352,7 +301,6 @@ export default function MovieForm() {
             options={typeOptions}
             label="Type"
           />
-
           <Selector
             onChange={handleChange}
             name="language"
@@ -372,10 +320,11 @@ export default function MovieForm() {
 
       <WritersModal
         onClose={hideWritersModal}
-        profiles={writers}
         visible={showWritersModal}
+        profiles={writers}
         onRemoveClick={handleWriterRemove}
       />
+
       <CastModal
         onClose={hideCastModal}
         casts={cast}
@@ -396,39 +345,18 @@ const Label = ({ children, htmlFor }) => {
   return (
     <label
       htmlFor={htmlFor}
-      className="
-        dark:text-dark-subtle 
-        text-light-subtle 
-        font-semibold"
+      className="dark:text-dark-subtle text-light-subtle font-semibold"
     >
       {children}
     </label>
   );
 };
 
-//creating the notification of how many writers that were selected
 const LabelWithBadge = ({ children, htmlFor, badge = 0 }) => {
   const renderBadge = () => {
-    //if there are no people submitted, don't show 0, show nothing
     if (!badge) return null;
     return (
-      <span className="
-        dark:bg-dark-subtle
-        bg-light-subtle
-        text-white
-        absolute
-        top-0
-        right-0
-        translate-x-6
-        -translate-y-1
-        text-xs
-        w-5
-        h-5
-        rounded-full
-        flex
-        justify-center
-        items-center"
-      >
+      <span className="dark:bg-dark-subtle bg-light-subtle text-white absolute top-0 right-0 translate-x-2 -translate-y-1 text-xs w-5 h-5 rounded-full flex justify-center items-center">
         {badge <= 9 ? badge : "9+"}
       </span>
     );
@@ -442,10 +370,8 @@ const LabelWithBadge = ({ children, htmlFor, badge = 0 }) => {
   );
 };
 
-//hide this button if there are no inputted people
 const ViewAllBtn = ({ visible, children, onClick }) => {
   if (!visible) return null;
-  //when using multiple buttons in a single form, need to specify it's type
   return (
     <button
       onClick={onClick}

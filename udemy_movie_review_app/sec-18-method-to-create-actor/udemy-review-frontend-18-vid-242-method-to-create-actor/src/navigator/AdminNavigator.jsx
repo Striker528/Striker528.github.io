@@ -6,34 +6,29 @@ import Header from "../components/admin/Header";
 import Movies from "../components/admin/Movies";
 import MovieUpload from "../components/admin/MovieUpload";
 import Navbar from "../components/admin/Navbar";
-import ActorUpload from "../components/modals/ActorUpload";
+import ActorUpload from "../components/models/ActorUpload";
 import NotFound from "../components/NotFound";
 
 export default function AdminNavigator() {
-  //states for showing the movie upload modal
   const [showMovieUploadModal, setShowMovieUploadModal] = useState(false);
-  //state for the actor upload
   const [showActorUploadModal, setShowActorUploadModal] = useState(false);
 
   const displayMovieUploadModal = () => {
-    setShowMovieUploadModal(true)
+    setShowMovieUploadModal(true);
   };
+
   const hideMovieUploadModal = () => {
-    setShowMovieUploadModal(false)
+    setShowMovieUploadModal(false);
   };
 
   const displayActorUploadModal = () => {
-    setShowActorUploadModal(true)
-  };
-  const hideActorUploadModal = () => {
-    setShowActorUploadModal(false)
+    setShowActorUploadModal(true);
   };
 
-  //show the movie upload form:
-  //1st, the user need to click on the button at the top of the screeen
-  //which will change the state of hte showMovieUploadModal to be true
-  //which will will go to the bottom of this return ( <MovieUpload visible={showMovieUploadModal} onClose={hideMovieUploadModal} />)
-  //and will show the MovieForm
+  const hideActorUploadModal = () => {
+    setShowActorUploadModal(false);
+  };
+
   return (
     <>
       <div className="flex dark:bg-primary bg-white">
@@ -51,8 +46,14 @@ export default function AdminNavigator() {
           </Routes>
         </div>
       </div>
-      <MovieUpload visible={showMovieUploadModal} onClose={hideMovieUploadModal} />
-      <ActorUpload visible={showActorUploadModal} onClose={hideActorUploadModal} />
+      <MovieUpload
+        visible={showMovieUploadModal}
+        onClose={hideMovieUploadModal}
+      />
+      <ActorUpload
+        visible={showActorUploadModal}
+        onClose={hideActorUploadModal}
+      />
     </>
   );
 }
