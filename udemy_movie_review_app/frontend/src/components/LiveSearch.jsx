@@ -12,6 +12,8 @@ export default function LiveSearch({
   renderItem = null,
   onChange = null,
   onSelect = null,
+  //for better focus when typing in director's name
+  visible,
 }) {
   //creating state displaySearch
   //turning these off(false) or on(true) will show the displaySearch or not:
@@ -103,6 +105,13 @@ export default function LiveSearch({
     //new state
     if (value) setDefaultValue(value)
   }, [value]);
+
+  //trouble with displaying the director's name when we are typing
+  //before: had to unfocus then focus
+  useEffect(() => {
+    if (visible) return setDisplaySearch(visible)
+    setDisplaySearch(false);
+  }, [visible])
 
   return (
     <div className="relative">

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNotification } from "../../hooks";
+import { useNotification, useSearch } from "../../hooks";
 import { commonInputClasses } from "../../utils/theme";
 import Submit from "../form/Submit";
 import LiveSearch from "../LiveSearch";
@@ -17,6 +17,7 @@ import {
   statusOptions,
   typeOptions,
 } from "../../utils/options";
+import { searchActor } from "../../api/actor";
 
 export const results = [
   {
@@ -58,6 +59,7 @@ export const results = [
 ];
 
 //rendering each character for the writer and direction portions
+
 export const renderItem = (result) => {
   return (
     <div key={result.id} className="
@@ -102,8 +104,13 @@ export default function MovieForm() {
   const [showGenresModal, setShowGenresModal] = useState(false);
   //state for rendering the poster
   const [selectedPosterForUI, setSelectedPosterForUI] = useState("");
+  const [writerName, setWriterName] = useState('');
+  const [writersProfile, setWritersProfile] = useState([]);
+  const [directorsProfile, setDirectorsProfile] = useState([]);
 
   const { updateNotification } = useNotification();
+
+  const {handleSearch, searching, results, resetSearch} = useSearch()
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -124,6 +131,9 @@ export default function MovieForm() {
       updatePosterForUI(poster);
       return setMovieInfo({ ...movieInfo, poster });
     }
+
+    //if (name === 'writers') return setWriterName(value);
+    
     //...movieInfo: spread all of the movie info here
     setMovieInfo({ ...movieInfo, [name]: value });
   };
@@ -138,6 +148,8 @@ export default function MovieForm() {
     //just like the rest of the updating
     //fill in the movieInfo's director field with what the user submitted (profile)
     setMovieInfo({ ...movieInfo, director: profile });
+    //after putting in a Director, reset the search
+    resetSearch()
   };
 
   const updateCast = (castInfo) => {
@@ -211,6 +223,37 @@ export default function MovieForm() {
     setMovieInfo({ ...movieInfo, cast: [...newCast] });
   };
 
+  const handleProfileChange = ({ target }) => {
+    //when typing into the director field, to test, can take in the onChange item
+    /*
+    const handleProfileChange = (e) = {
+      console.log (e);
+    }
+    */
+    //console.log(target.name)
+    //name of the input field is director
+    //because in the LiveSearch field, name = "director"
+    //from that get an object
+    //to get the text that is inputed, need the .value of the target
+    //target.name === target.value
+    //console.log(target.value);
+
+    const { name, value } = target;
+    if (name === "director") {
+      setMovieInfo({ ...movieInfo, director: { name: value } });
+      //updatersFun here is setDirectorsProfile
+      handleSearch(searchActor, value, setDirectorsProfile);
+    }
+    
+    if (name === "writers") {
+      setWriterName(value);
+      //updatersFun here is setWritersProfile
+      handleSearch(searchActor, value, setWritersProfile);
+    }
+    
+    handleSearch(searchActor, value);
+  };
+
   //destructure what we want
   const {
     title,
@@ -281,9 +324,11 @@ export default function MovieForm() {
               name="director"
               value={director.name}
               placeholder="Search profile"
-              results={results}
+              results={directorsProfile}
               renderItem={renderItem}
               onSelect={updateDirector}
+              onChange={handleProfileChange}
+              visible={directorsProfile.length}
             />
           </div>
 
@@ -302,9 +347,12 @@ export default function MovieForm() {
             <LiveSearch
               name="writers"
               placeholder="Search profile"
-              results={results}
+              results={writersProfile}
               renderItem={renderItem}
               onSelect={updateWriters}
+              onChange={handleProfileChange}
+              value={writerName}
+              visible={writersProfile.length}
             />
           </div>
 
