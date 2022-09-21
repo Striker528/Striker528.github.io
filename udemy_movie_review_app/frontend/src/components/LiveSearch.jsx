@@ -13,7 +13,8 @@ export default function LiveSearch({
   onChange = null,
   onSelect = null,
   //for better focus when typing in director's name
-  visible,
+  //visible,
+  //can just use results.length
 }) {
   //creating state displaySearch
   //turning these off(false) or on(true) will show the displaySearch or not:
@@ -99,19 +100,26 @@ export default function LiveSearch({
     onChange && onChange(e)
   };
 
-  //before, could not edit the director's name after selection == bad
-  //take value as dependency
+  //RESET LIVE SEARCH AFTER WRITER SELECTION
+  // unable to reset input after writer selection, so to fix it remove the if condition
+  // //before, could not edit the director's name after selection == bad
+  // //take value as dependency
+  // useEffect(() => {
+  //   //new state
+  //   if (value) setDefaultValue(value)
+  // }, [value]);
   useEffect(() => {
-    //new state
-    if (value) setDefaultValue(value)
+    setDefaultValue(value);
   }, [value]);
 
   //trouble with displaying the director's name when we are typing
   //before: had to unfocus then focus
+  //instead of visible, can just use the results.length
+  //now don't need to pass the visible prompt in DirectorSelector
   useEffect(() => {
-    if (visible) return setDisplaySearch(visible)
+    if (results.length) return setDisplaySearch(true)
     setDisplaySearch(false);
-  }, [visible])
+  }, [results.length])
 
   return (
     <div className="relative">

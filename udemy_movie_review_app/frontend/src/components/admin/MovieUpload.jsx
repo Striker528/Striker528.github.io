@@ -76,8 +76,10 @@ export default function MovieUpload({visible, onClose}) {
   };
 
   //adding in the custom scroll bar (custom-scroll-bar)
+
+  //for the modalContainer, don't want to close it
   return (
-    <ModalContainer visible = {visible} onClose={onClose}>
+    <ModalContainer visible = {visible}>
         <UploadProgress
           visible={!videoUploaded && videoSelected}
           message={getUploadProgressValue()}

@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { useNotification, useSearch } from "../../hooks";
+//import { useNotification, useSearch } from "../../hooks";
+import { useNotification } from "../../hooks";
 import { commonInputClasses } from "../../utils/theme";
 import Submit from "../form/Submit";
-import LiveSearch from "../LiveSearch";
+//import LiveSearch from "../LiveSearch";
 import TagsInput from "../TagsInput";
 //import ModalContainer from "../modals/ModalContainer";
 import WritersModal from "../modals/WritersModal";
@@ -17,66 +18,54 @@ import {
   statusOptions,
   typeOptions,
 } from "../../utils/options";
-import { searchActor } from "../../api/actor";
+//import { searchActor } from "../../api/actor";
+//import { renderItem } from "../../utils/helper";
+import Label from "../Label";
+import DirectorSelector from "../DirectorSelector";
+import WriterSelector from "../WriterSelector";
+import ViewAllBtn from "../ViewAllButton";
+import LabelWithBadge from "../LabelWithBadge";
 
-export const results = [
-  {
-    id: "1",
-    avatar:
-      "https://images.unsplash.com/photo-1643713303351-01f540054fd7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80",
-    name: "John Doe",
-  },
-  {
-    id: "2",
-    avatar:
-      "https://images.unsplash.com/photo-1643883135036-98ec2d9e50a1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80",
-    name: "Chandri Anggara",
-  },
-  {
-    id: "3",
-    avatar:
-      "https://images.unsplash.com/photo-1578342976795-062a1b744f37?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80",
-    name: "Amin RK",
-  },
-  {
-    id: "4",
-    avatar:
-      "https://images.unsplash.com/photo-1564227901-6b1d20bebe9d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80",
-    name: "Edward Howell",
-  },
-  {
-    id: "5",
-    avatar:
-      "https://images.unsplash.com/photo-1578342976795-062a1b744f37?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80",
-    name: "Amin RK",
-  },
-  {
-    id: "6",
-    avatar:
-      "https://images.unsplash.com/photo-1564227901-6b1d20bebe9d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80",
-    name: "Edward Howell",
-  },
-];
+// export const results = [
+//   {
+//     id: "1",
+//     avatar:
+//       "https://images.unsplash.com/photo-1643713303351-01f540054fd7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80",
+//     name: "John Doe",
+//   },
+//   {
+//     id: "2",
+//     avatar:
+//       "https://images.unsplash.com/photo-1643883135036-98ec2d9e50a1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80",
+//     name: "Chandri Anggara",
+//   },
+//   {
+//     id: "3",
+//     avatar:
+//       "https://images.unsplash.com/photo-1578342976795-062a1b744f37?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80",
+//     name: "Amin RK",
+//   },
+//   {
+//     id: "4",
+//     avatar:
+//       "https://images.unsplash.com/photo-1564227901-6b1d20bebe9d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80",
+//     name: "Edward Howell",
+//   },
+//   {
+//     id: "5",
+//     avatar:
+//       "https://images.unsplash.com/photo-1578342976795-062a1b744f37?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80",
+//     name: "Amin RK",
+//   },
+//   {
+//     id: "6",
+//     avatar:
+//       "https://images.unsplash.com/photo-1564227901-6b1d20bebe9d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80",
+//     name: "Edward Howell",
+//   },
+// ];
 
 //rendering each character for the writer and direction portions
-
-export const renderItem = (result) => {
-  return (
-    <div key={result.id} className="
-      flex
-      space-x-2
-      rounded
-      overflow-hidden"
-    >
-      <img
-        src={result.avatar}
-        alt={result.name}
-        className="w-16 h-16 object-cover"
-      />
-      <p className="dark:text-white font-semibold">{result.name}</p>
-    </div>
-  );
-};
 
 const defaultMovieInfo = {
   title: "",
@@ -104,13 +93,15 @@ export default function MovieForm() {
   const [showGenresModal, setShowGenresModal] = useState(false);
   //state for rendering the poster
   const [selectedPosterForUI, setSelectedPosterForUI] = useState("");
-  const [writerName, setWriterName] = useState('');
-  const [writersProfile, setWritersProfile] = useState([]);
-  const [directorsProfile, setDirectorsProfile] = useState([]);
+  //after refactoring, not using these 3
+  //const [writerName, setWriterName] = useState('');
+  //const [writersProfile, setWritersProfile] = useState([]);
+  //const [directorsProfile, setDirectorsProfile] = useState([]);
 
   const { updateNotification } = useNotification();
 
-  const {handleSearch, searching, results, resetSearch} = useSearch()
+  //after refactor, not using this
+  //const {handleSearch, searching, results, resetSearch} = useSearch()
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -149,7 +140,8 @@ export default function MovieForm() {
     //fill in the movieInfo's director field with what the user submitted (profile)
     setMovieInfo({ ...movieInfo, director: profile });
     //after putting in a Director, reset the search
-    resetSearch()
+    //resetSearch();
+    //actually don't need resetSearch here
   };
 
   const updateCast = (castInfo) => {
@@ -178,6 +170,11 @@ export default function MovieForm() {
     //fill in the movieInfo with the array of writers the user submitted
     // ...writers: spread all of the old writers and add the new profile
     setMovieInfo({ ...movieInfo, writers: [...writers, profile] });
+
+    //when selecting the writers
+    //reset the state of setWriterName
+    //setWriterName("");
+    //don't need this after refactoring
   };
 
   const hideWritersModal = () => {
@@ -223,42 +220,45 @@ export default function MovieForm() {
     setMovieInfo({ ...movieInfo, cast: [...newCast] });
   };
 
-  const handleProfileChange = ({ target }) => {
-    //when typing into the director field, to test, can take in the onChange item
-    /*
-    const handleProfileChange = (e) = {
-      console.log (e);
-    }
-    */
-    //console.log(target.name)
-    //name of the input field is director
-    //because in the LiveSearch field, name = "director"
-    //from that get an object
-    //to get the text that is inputed, need the .value of the target
-    //target.name === target.value
-    //console.log(target.value);
+  //don't need this after the refactoring
+  // const handleProfileChange = ({ target }) => {
+  //   //when typing into the director field, to test, can take in the onChange item
+  //   /*
+  //   const handleProfileChange = (e) = {
+  //     console.log (e);
+  //   }
+  //   */
+  //   //console.log(target.name)
+  //   //name of the input field is director
+  //   //because in the LiveSearch field, name = "director"
+  //   //from that get an object
+  //   //to get the text that is inputed, need the .value of the target
+  //   //target.name === target.value
+  //   //console.log(target.value);
 
-    const { name, value } = target;
-    if (name === "director") {
-      setMovieInfo({ ...movieInfo, director: { name: value } });
-      //updatersFun here is setDirectorsProfile
-      handleSearch(searchActor, value, setDirectorsProfile);
-    }
+  //   const { name, value } = target;
+  //   if (name === "director") {
+  //     setMovieInfo({ ...movieInfo, director: { name: value } });
+  //     //updatersFun here is setDirectorsProfile
+  //     handleSearch(searchActor, value, setDirectorsProfile);
+  //   }
     
-    if (name === "writers") {
-      setWriterName(value);
-      //updatersFun here is setWritersProfile
-      handleSearch(searchActor, value, setWritersProfile);
-    }
+  //   if (name === "writers") {
+  //     setWriterName(value);
+  //     //updatersFun here is setWritersProfile
+  //     handleSearch(searchActor, value, setWritersProfile);
+  //   }
     
-    handleSearch(searchActor, value);
-  };
+  //   handleSearch(searchActor, value);
+  // };
 
   //destructure what we want
+  
   const {
     title,
     storyLine,
-    director,
+    //after refactor, not use this
+    //director,
     writers,
     cast,
     tags,
@@ -280,6 +280,9 @@ export default function MovieForm() {
   //go to the function displayGenresModal which sets setShowGenresModal to true
   //and once that is true, it goes down to GenresModal at the bottom and then that gets shown
   //and that is the main meat and potatoes
+
+  //when selecting the writers
+  //reset the state of setWriterName
   return (
     <>
       <div className="flex space-x-3">
@@ -318,19 +321,7 @@ export default function MovieForm() {
             <TagsInput value={tags} name="tags" onChange={updateTags} />
           </div>
 
-          <div>
-            <Label htmlFor="director">Director</Label>
-            <LiveSearch
-              name="director"
-              value={director.name}
-              placeholder="Search profile"
-              results={directorsProfile}
-              renderItem={renderItem}
-              onSelect={updateDirector}
-              onChange={handleProfileChange}
-              visible={directorsProfile.length}
-            />
-          </div>
+          <DirectorSelector onSelect={updateDirector}/>
 
           <div>
             <div className="flex justify-between">
@@ -344,16 +335,7 @@ export default function MovieForm() {
                 View All
               </ViewAllBtn>
             </div>
-            <LiveSearch
-              name="writers"
-              placeholder="Search profile"
-              results={writersProfile}
-              renderItem={renderItem}
-              onSelect={updateWriters}
-              onChange={handleProfileChange}
-              value={writerName}
-              visible={writersProfile.length}
-            />
+            <WriterSelector onSelect={updateWriters}/>
           </div>
 
           <div>
@@ -439,68 +421,3 @@ export default function MovieForm() {
     </>
   );
 }
-
-const Label = ({ children, htmlFor }) => {
-  return (
-    <label
-      htmlFor={htmlFor}
-      className="
-        dark:text-dark-subtle 
-        text-light-subtle 
-        font-semibold"
-    >
-      {children}
-    </label>
-  );
-};
-
-//creating the notification of how many writers that were selected
-const LabelWithBadge = ({ children, htmlFor, badge = 0 }) => {
-  const renderBadge = () => {
-    //if there are no people submitted, don't show 0, show nothing
-    if (!badge) return null;
-    return (
-      <span className="
-        dark:bg-dark-subtle
-        bg-light-subtle
-        text-white
-        absolute
-        top-0
-        right-0
-        translate-x-6
-        -translate-y-1
-        text-xs
-        w-5
-        h-5
-        rounded-full
-        flex
-        justify-center
-        items-center"
-      >
-        {badge <= 9 ? badge : "9+"}
-      </span>
-    );
-  };
-
-  return (
-    <div className="relative">
-      <Label htmlFor={htmlFor}>{children}</Label>
-      {renderBadge()}
-    </div>
-  );
-};
-
-//hide this button if there are no inputted people
-const ViewAllBtn = ({ visible, children, onClick }) => {
-  if (!visible) return null;
-  //when using multiple buttons in a single form, need to specify it's type
-  return (
-    <button
-      onClick={onClick}
-      type="button"
-      className="dark:text-white text-primary hover:underline transition"
-    >
-      {children}
-    </button>
-  );
-};

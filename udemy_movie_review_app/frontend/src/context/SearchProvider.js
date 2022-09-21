@@ -44,9 +44,12 @@ export default function SearchProvider({ children }) {
 
       setResults(results)
       
-      //update state 
+      //update state
       //spread all results in the updater function
-      updaterFun([...results]);
+      
+      //making this an optional field
+      //only if there is an updaterFun then we can call updaterFun()
+      updaterFun && updaterFun([...results]);
     }
 
     //debounce take a function, and then will return another function where we can pass our parameters
@@ -57,7 +60,9 @@ export default function SearchProvider({ children }) {
   const handleSearch = (method, query, updaterFun) => {
     setSearching(true);
     if (!query.trim()) {
-      updaterFun([]);
+      //making this an optional field
+      //only if there is an updaterFun then we can call updaterFun()
+      updaterFun && updaterFun([]);
       resetSearch();
     }
 

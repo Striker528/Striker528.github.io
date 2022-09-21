@@ -1,8 +1,10 @@
 import React, { useState } from "react";
-import { useNotification } from "../../hooks";
+import { useNotification, useSearch } from "../../hooks";
 import { commonInputClasses } from "../../utils/theme";
-import { renderItem, results } from "../admin/MovieForm";
+//import { results } from "../admin/MovieForm";
+import { renderItem } from "../../utils/helper";
 import LiveSearch from "../LiveSearch";
+import { searchActor } from "../../api/actor";
 
 // const cast = [{ actor: id, roleAs: "", leadActor: true }];
 //base object
@@ -13,8 +15,10 @@ const defaultCastInfo = {
 };
 export default function CastForm({ onSubmit }) {
   const [castInfo, setCastInfo] = useState({ ...defaultCastInfo });
+  const [profiles, setProfiles] = useState([]);
 
   const { updateNotification } = useNotification();
+  const {handleSearch, resetSearch} = useSearch()
 
   const handleOnChange = ({ target }) => {
     //put everything in the castInfo, for now to store all the actors
@@ -40,8 +44,20 @@ export default function CastForm({ onSubmit }) {
       return updateNotification("error", "Cast role is missing!");
 
     onSubmit(castInfo);
-    setCastInfo({ ...defaultCastInfo });
+    //after submitting
+    setCastInfo({ ...defaultCastInfo, profile: {name: ""} });
+    resetSearch();
+    setProfiles([]);
   };
+
+  const handleProfileChange = ({target}) =>{
+    const { value } = target;
+    const { profile } = castInfo;
+    profile.name = value;
+    setCastInfo({ ...castInfo, ...profile })
+    //search the profile
+    handleSearch(searchActor, value, setProfiles)
+  }
 
   //need to destructure these values
   //after the input, render the LiveSearch
@@ -63,9 +79,10 @@ export default function CastForm({ onSubmit }) {
       <LiveSearch
         placeholder="Search profile"
         value={profile.name}
-        results={results}
+        results={profiles}
         onSelect={handleProfileSelect}
         renderItem={renderItem}
+        onChange={handleProfileChange}
       />
       <span className="
         dark:text-dark-subtle
