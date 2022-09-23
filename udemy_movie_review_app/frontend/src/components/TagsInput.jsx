@@ -10,6 +10,10 @@ export default function TagsInput({ name, value, onChange }) {
 
   const handleOnChange = ({ target }) => {
     const { value } = target;
+    //console.log("###########################value is:")
+    //console.log(value)
+    //only after hitting "," will the tag be placed in the movie object in the tag array
+    //hitting enter will not place it in the array
     if (value !== ",") setTag(value);
 
     onChange(tags);

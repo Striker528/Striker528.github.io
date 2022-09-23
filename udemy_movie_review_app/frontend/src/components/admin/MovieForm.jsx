@@ -143,7 +143,7 @@ const validateMovie = (movieInfo) => {
   if (!cast.length) return { error: "Cast is missing!" }
   //if (!Array.isArray(cast)) return { error: "Cast is missing!" }
   for (let people of cast) {
-    if (typeof c !== "object") {
+    if (typeof people !== "object") {
       return {error: "Invalid Cast!"}
     }
   }
@@ -393,7 +393,7 @@ export default function MovieForm() {
           </div>
 
           <div>
-            <Label htmlFor="tags">Tags</Label>
+            <Label htmlFor="tags">Tags: must use "," to enter the tag</Label>
             <TagsInput value={tags} name="tags" onChange={updateTags} />
           </div>
 
@@ -417,7 +417,7 @@ export default function MovieForm() {
           <div>
             <div className="flex justify-between">
               <LabelWithBadge badge={cast.length}>
-                Add Cast & Crew
+                Add Cast & Crew (click the checkbox for the lead actor)
               </LabelWithBadge>
               <ViewAllBtn onClick={displayCastModal} visible={cast.length}>
                 View All
@@ -426,12 +426,18 @@ export default function MovieForm() {
             <CastForm onSubmit={updateCast} />
           </div>
 
-          <input
+          <div>
+            <Label htmlFor="date">Release Date</Label>
+            <br>
+            </br>
+            <input
             type="date"
             className={commonInputClasses + " border-2 rounded p-1 w-auto"}
             onChange={handleChange}
             name="releseDate"
           />
+          </div>
+          
 
           <Submit value="Upload" onClick={handleSubmit} type="button" />
         </div>
