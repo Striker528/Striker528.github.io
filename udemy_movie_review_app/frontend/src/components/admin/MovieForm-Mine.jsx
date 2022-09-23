@@ -136,8 +136,7 @@ const validateMovie = (movieInfo) => {
     if (!tag_holder.trim()) {
       return {error: "Invalid tags!"}
     }
-    }
-    
+  }
 
   //if no cast
   if (!cast.length) return { error: "Cast is missing!" }
@@ -206,8 +205,6 @@ export default function MovieForm() {
   const updateTags = (tags) => {
     //in the TagsInput.jsx file, already have the handleOnChange
     //that method will fire whenever we make any changes in the input field
-    console.log("tags are:")
-    console.log(tags) 
     setMovieInfo({ ...movieInfo, tags });
   };
 
