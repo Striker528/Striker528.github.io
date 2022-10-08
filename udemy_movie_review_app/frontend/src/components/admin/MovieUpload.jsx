@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { FileUploader } from "react-drag-drop-files";
 import { AiOutlineCloudUpload } from "react-icons/ai";
-import { uploadTrailer } from "../../api/movie";
+import { uploadMovie, uploadTrailer } from "../../api/movie";
 import { useNotification } from "../../hooks";
 import ModalContainer from "../modals/ModalContainer";
 import MovieForm from "./MovieForm";
@@ -11,6 +11,7 @@ export default function MovieUpload({visible, onClose}) {
   const [videoUploaded, setVideoUploaded] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [videoInfo, setVideoInfo] = useState({});
+  const [busy, setBusy] = useState(false);
   
   /*
   An example, can't use this
@@ -42,7 +43,10 @@ export default function MovieUpload({visible, onClose}) {
   const handleUploadTrailer = async (data) => {
     //have to pass in data as Form Data
     //backend is sending the error if there is one, the url, and public_id
-    const { error, url, public_id } = await uploadTrailer(data, setUploadProgress);
+    const { error, url, public_id } = await uploadTrailer(
+      data,
+      setUploadProgress
+    );
     if (error) return updateNotification("error", error);
 
     setVideoUploaded(true);
@@ -54,7 +58,7 @@ export default function MovieUpload({visible, onClose}) {
     so say we first sent in the movie to be uploaded
     then started filling in files like title, storyline, etc
     as soon as the trailer would be uploaded, it would be sent to this 
-    setMovieINfo function and as we have not submitted the rest of the form, the rest would be blank
+    setMovieInfo function and as we have not submitted the rest of the form, the rest would be blank
     no title, no storyline, nothing you filled in
     */
   };
@@ -75,23 +79,46 @@ export default function MovieUpload({visible, onClose}) {
     return `Upload progress ${uploadProgress}%`;
   };
 
+  const handleSubmit = async (data) => {
+    //little validation log
+    if (!videoInfo.url || !videoInfo.public_id) {
+      return updateNotification("error", "Trailer is missing!");
+    }
+
+    setBusy(true);
+
+    data.append("trailer", JSON.stringify(videoInfo));
+    //console.log(data);
+    const res = await uploadMovie(data);
+    setBusy(false);
+    console.log(res);
+
+    onClose();
+  }
+
   //adding in the custom scroll bar (custom-scroll-bar)
 
   //for the modalContainer, don't want to close it
-  return (
-    <ModalContainer visible = {visible}>
-        <UploadProgress
-          visible={!videoUploaded && videoSelected}
-          message={getUploadProgressValue()}
-          width={uploadProgress}
-        />
-        <TrailerSelector
-          visible={!videoSelected}
-          onTypeError={handleTypeError}
-          handleChange={handleChange}
-        /> 
 
-        <MovieForm />
+  //as the movieForm now taking in onSubmit, can pass that now at the MovieForm
+  return (
+    <ModalContainer visible={visible}>
+      <div className="mb-5">
+      <UploadProgress
+            visible={!videoUploaded && videoSelected}
+            message={getUploadProgressValue()}
+            width={uploadProgress}
+        />
+      </div>
+      {!videoSelected ? (
+          <TrailerSelector
+            visible={!videoSelected}
+            onTypeError={handleTypeError}
+            handleChange={handleChange}
+          /> 
+      )  : (
+          <MovieForm busy={busy}  onSubmit={!busy ? handleSubmit : null} />
+      )}
       </ModalContainer>
   );
 }

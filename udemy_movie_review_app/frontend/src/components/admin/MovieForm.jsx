@@ -25,47 +25,9 @@ import DirectorSelector from "../DirectorSelector";
 import WriterSelector from "../WriterSelector";
 import ViewAllBtn from "../ViewAllButton";
 import LabelWithBadge from "../LabelWithBadge";
+import { validateMovie } from "../../utils/validator";
 
-// export const results = [
-//   {
-//     id: "1",
-//     avatar:
-//       "https://images.unsplash.com/photo-1643713303351-01f540054fd7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80",
-//     name: "John Doe",
-//   },
-//   {
-//     id: "2",
-//     avatar:
-//       "https://images.unsplash.com/photo-1643883135036-98ec2d9e50a1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80",
-//     name: "Chandri Anggara",
-//   },
-//   {
-//     id: "3",
-//     avatar:
-//       "https://images.unsplash.com/photo-1578342976795-062a1b744f37?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80",
-//     name: "Amin RK",
-//   },
-//   {
-//     id: "4",
-//     avatar:
-//       "https://images.unsplash.com/photo-1564227901-6b1d20bebe9d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80",
-//     name: "Edward Howell",
-//   },
-//   {
-//     id: "5",
-//     avatar:
-//       "https://images.unsplash.com/photo-1578342976795-062a1b744f37?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80",
-//     name: "Amin RK",
-//   },
-//   {
-//     id: "6",
-//     avatar:
-//       "https://images.unsplash.com/photo-1564227901-6b1d20bebe9d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80",
-//     name: "Edward Howell",
-//   },
-// ];
 
-//rendering each character for the writer and direction portions
 
 const defaultMovieInfo = {
   title: "",
@@ -82,77 +44,11 @@ const defaultMovieInfo = {
   status: "",
 };
 
-const validateMovie = (movieInfo) => {
-  //to check go to:
-  //backend/middlewars/validator.js => validateMovie
-  //storyLine is storyLine not storyline , check spelling and capitalization
-  const { title, storyLine, language, releseDate, status, type, genres, tags, cast } = movieInfo
-  
-  //if no title
-  const title_holder = title || '';
-  if (!title_holder.trim()) return { error: "Title is missing!" }
-  //if no storyline
-  //console.log("storyline")
-  //console.log(storyline)
-  const storyline_holder = storyLine || '';
-  //console.log("storyline_holder")
-  //console.log(storyline_holder)
-  if (!storyline_holder.trim()) return { error: "Storyline is missing!" }
-  //if no language
-  const language_holder = language || '';
-  if (!language_holder.trim()) return { error: "Language is missing!" }
-  //if no releaseDate
-  const releaseDate_holder = releseDate || '';
-  if (!releaseDate_holder.trim()) return { error: "Release Date is missing!" }
-  //if no status
-  const status_holder = status || '';
-  if (!status_holder.trim()) return { error: "Status is missing!" }
-  //if no type
-  const type_holder = type || '';
-  if (!type_holder.trim()) return { error: "Type is missing!" }
-  
-  //if no genres
-  //we are checking if genres is an array or not
-  if (!genres.length) return { error: "Genres is missing!" }
-  //or
-  //if no genres
-  //we are checking if genres is an array or not
-  //if (!Array.isArray(genres)) return { error: "Genres is missing!" }
-  //we are checking genres needs to field with string values
-  for (let gen of genres) {
-    const gen_holder = gen || '';
-    if (!gen_holder.trim()) {
-      return {error: "Invalid genres!"}
-    }
-  }
+//validate movie was moved to utiles/validator
 
-  //if no tags
-  //if (!Array.isArray(tags)) return { error: "Tags is missing!" }
-  //console.log("tags")
-  //console.log(tags)
-  if (!tags.length) return { error: "Tags is missing!" }
-  for (let tag of tags) {
-    const tag_holder = tag || '';
-    if (!tag_holder.trim()) {
-      return {error: "Invalid tags!"}
-    }
-    }
-    
-
-  //if no cast
-  if (!cast.length) return { error: "Cast is missing!" }
-  //if (!Array.isArray(cast)) return { error: "Cast is missing!" }
-  for (let people of cast) {
-    if (typeof people !== "object") {
-      return {error: "Invalid Cast!"}
-    }
-  }
-
-  //if everything works, need to add a return statement that everything is good
-  return {error: null}
-}
-
-export default function MovieForm() {
+//with taking in onSubmit, now this movieInfo will be available inside our movieUpload component
+//have busy state from MovieUpload
+export default function MovieForm({onSubmit, busy}) {
   //default state
   //movieInfo will be very big, store it in variable defaultMovieInfo
   const [movieInfo, setMovieInfo] = useState({ ...defaultMovieInfo });
@@ -177,15 +73,74 @@ export default function MovieForm() {
     e.preventDefault();
     //console.log(movieInfo);
     const { error } = validateMovie(movieInfo);
-    if (error) return console.log(error);
+    //instead of logging the error, give an update to the user
+    if (error) return updateNotification("error", error);
+
+    //cast, tags, genres, writers, all need to be strings
+    //need to format the data just like how the backend accepts it
+    //1st need to destructure
+    const { tags, genres, cast, writers, director, poster } = movieInfo;
+
+    //to simplify the process of converting all the data to strings
+    //making a new state: finalMovie
+    const formData = new FormData();
+    const finalMovieInfo = {
+      ...movieInfo,
+
+    };
+
+    finalMovieInfo.tags = JSON.stringify(tags);
+    finalMovieInfo.genres = JSON.stringify(genres);
+
+    //how to map to an array
+    //making a brand new array with the map
+    //map makes a new array
+    //just return the c.id
+    /*
+    cast format:
+    {
+    actor: {type: mongoose.Schema.Types.ObjectId, ref: "Actor"},
+    roleAs: String,
+    leadActor: Boolean,
+    }
+
+    */
+    //console.log(cast);
+    const finalCast = cast.map((c) => ({
+      actor: c.profile.id,
+      roleAs: c.roleAs,
+      leadActor: c.leadActor
+    }));
+    finalMovieInfo.cast = JSON.stringify(finalCast);
+
+    //writers are optional, so need to check
+    if (writers.length) {
+      const finalWriters = writers.map((w) => w.id);
+      finalMovieInfo.writers = JSON.stringify(finalWriters);
+    }
+
+    //director will be an object and optional
+    if (director.id) finalMovieInfo.director = director.id;
+
+    if (poster) finalMovieInfo.poster = poster;
     
-    console.log(movieInfo);
+    for (let key in finalMovieInfo) {
+      formData.append(key, finalMovieInfo[key]);
+    }
+    
+    
+    //instead of console.log, use the onSubmit method which will be accepted as the prompt
+    //console.log(movieInfo);
+    //now not movieInfo, it is formData
+    onSubmit(formData);
   };
 
   const updatePosterForUI = (file) => {
     //create a url for us and store it in setSelectedPosterForUI
+    //const url = URL.createObjectURL(file);
+    //const { error } = setSelectedPosterForUI(url);
     const url = URL.createObjectURL(file);
-    const { error } = setSelectedPosterForUI(url);
+    setSelectedPosterForUI(url);
   };
 
   const handleChange = ({ target }) => {
@@ -206,8 +161,8 @@ export default function MovieForm() {
   const updateTags = (tags) => {
     //in the TagsInput.jsx file, already have the handleOnChange
     //that method will fire whenever we make any changes in the input field
-    console.log("tags are:")
-    console.log(tags) 
+    //console.log("tags are:")
+    //console.log(tags) 
     setMovieInfo({ ...movieInfo, tags });
   };
 
@@ -431,15 +386,20 @@ export default function MovieForm() {
             <br>
             </br>
             <input
-            type="date"
-            className={commonInputClasses + " border-2 rounded p-1 w-auto"}
-            onChange={handleChange}
-            name="releseDate"
-          />
+              type="date"
+              className={commonInputClasses + " border-2 rounded p-1 w-auto"}
+              onChange={handleChange}
+              name="releseDate"
+            />
           </div>
           
 
-          <Submit value="Upload" onClick={handleSubmit} type="button" />
+          <Submit
+            busy={busy}
+            value="Upload"
+            onClick={handleSubmit}
+            type="button"
+          />
         </div>
 
         <div className="w-[30%] space-y-5">
