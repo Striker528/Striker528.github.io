@@ -5,7 +5,8 @@ const {
     deleteActor,
     searchActor,
     getLatestActors,
-    getSingleActor } = require("../controllers/actors");
+    getSingleActor, 
+    getActors} = require("../controllers/actors");
 const { isAuth, isAdmin } = require("../middlewares/auth");
 const { uploadImage } = require("../middlewares/multer");
 const { validate, actorInfoValidator } = require("../middlewares/validator");
@@ -50,6 +51,8 @@ router.get(
     '/latest-uploads',
     getLatestActors
 );
+//now the route to only put a certain amount of actors on the actors tab and then cycle through a certain amount of actors
+router.get('/actors', isAuth, isAdmin, getActors);
 
 router.get(
     "/single/:id",

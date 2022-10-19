@@ -125,11 +125,33 @@ exports.getLatestActors = async (req, res) => {
 
 exports.getSingleActor = async (req, res) => {
     const { id } = req.params;
-    if(!isValidObjectId(id)) return sendError(res, 'Invalid  request, id not found')
+    if (!isValidObjectId(id)) return sendError(res, 'Invalid  request, id not found')
 
     const actor = await Actor.findById(id)
     if (!actor) return sendError(res, 'Invalid  request, no actor found', 404);
 
     
     res.json(formatActor(actor));
+};
+
+
+exports.getActors = async (req, res) => {
+    //values will be in string format
+    const { pageNo, limit } = req.query;
+    
+    //want to find all the actors, but only select a certain number: (what was passed from the front end)
+    //also want to use skip
+    const actors = await Actor.find({})
+        //latest actors will be selected at the beginning
+        .sort({ createdAt: -1 })
+        .skip(parseInt(pageNo) * parseInt(limit))
+        .limit(parseInt(limit));
+    
+    //need to map
+    //using map to create brand new array
+    //using formatActor to format the actor that we are getting from our actors
+    const profiles = actors.map((actor) => formatActor(actor))
+    res.json({
+        profiles,
+    })
 }

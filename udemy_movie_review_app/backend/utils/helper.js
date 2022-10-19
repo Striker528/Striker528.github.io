@@ -52,7 +52,7 @@ exports.uploadImageToCloud = async (file) => {
       id: _id,
       name,
       about,
-        gender,
+      gender,
       //if no profile picture was uploaded, it is all good because of the '?'
       avatar: avatar?.url,
     };

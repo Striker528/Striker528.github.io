@@ -1,6 +1,8 @@
 import React, { useState } from "react";
+import { useEffect } from "react";
 
 import {BsTrash, BsPencilSquare, BsBoxArrowUpRight} from "react-icons/bs";
+import { getActors } from "../../api/actor";
 
 export default function Actors() {
   /*
@@ -9,19 +11,32 @@ export default function Actors() {
           name:"Boba Fett",
           about:"The absolute best",
         }}
-  */
-
-  return (
-    <div className="grid grid-cols-4 gap-3 my-5">
-      <ActorProfile
+  
+  
+  <ActorProfile
         profile={{
           avatar:"https://lumiere-a.akamaihd.net/v1/images/boba-fett-main_a8fade4d.jpeg?region=205%2C34%2C1064%2C598&width=960",
           name:"Boba Fett",
           about:"The absolute best",
         }}
       />
+  */
+
+  const fetchActors = async () => {
+    //0 for page number, 5 for the limit
+    const res = await getActors(0, 5);
+    console.log(res);
+  };
+
+  useEffect(() => {
+    fetchActors();
+  }, []);
+
+  return (
+    <div className="grid grid-cols-4 gap-3 my-5">
+      
     </div>
-  )
+  );
 }
 
 //when taking something(s) in, alwasy use {} around it
