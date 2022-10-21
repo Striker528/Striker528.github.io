@@ -55,6 +55,8 @@ export default function Actors() {
   const handleOnPrevClick = () => {
     //this check need to be at the very beginning, not after currentPageNo -= 1;
     if (currentPageNo <= 0) return;
+    if (reachedToEnd) setReachedToEnd(false);
+    
     currentPageNo -= 1;
     fetchActors(currentPageNo);
   }
@@ -71,7 +73,11 @@ export default function Actors() {
         })}
       </div>
 
-      <NextAndPrevButton className="mt-5" onNextClick={handleOnNextClick} onPrevClick={handleOnPrevClick} />
+      <NextAndPrevButton
+        className="mt-5"
+        onNextClick={handleOnNextClick}
+        onPrevClick={handleOnPrevClick}
+      />
     </div>
     
   );
@@ -122,7 +128,7 @@ const ActorProfile = ({profile}) => {
             {getName(name)}
           </h1>
           <p
-            className="dark:text-white font-semibold">
+            className="text-primary dark:text-white font-semibold opacity-70">
             {about.substring(0,50)}
           </p>
         </div>

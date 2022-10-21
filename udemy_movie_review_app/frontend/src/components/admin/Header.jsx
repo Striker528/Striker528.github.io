@@ -164,7 +164,8 @@ const CreateOptions = ({ options, visible, onClose }) => {
       className="
         absolute 
         right-0 
-        top-12 
+        top-12
+        z-50
         flex 
         flex-col 
         space-y-3 p-5  

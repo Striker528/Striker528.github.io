@@ -317,3 +317,27 @@ exports.removeMovie = async (req, res) => {
   res.json({message: 'Movie removed successfully.'})
 
 };
+
+
+exports.getMovies = async (req, res) => {
+  //setting default values
+  const { pageNo = 0, limit = 10} = req.query;
+  const movies = await Movie
+    .find({})
+    .sort({ createdAt: -1 })
+    .skip(parseInt(pageNo) * parseInt(limit))
+    .limit(parseInt(limit));
+  
+  //although we don't have a function to format the movie, don't need it
+  //we only need the pic, name, description, genres, public/private and the id
+  //remember that poster is an optional field
+  const results = movies.map(movie => ({
+    id: movie._id,
+    title: movie.title,
+    poster: movie.poster?.url,
+    genres: movie.genres,
+    status: movie.status
+  }))
+
+  res.json({ movies: results });
+}
