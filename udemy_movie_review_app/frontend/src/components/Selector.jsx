@@ -32,6 +32,8 @@ export default function Selector({
     <select
       className="
         border-2 
+        bg-white
+        dark: bg-primary
         dark:border-dark-subtle 
         border-light-subtle 
         dark:focus:border-white 
@@ -43,8 +45,8 @@ export default function Selector({
         rounded 
         bg-transparent 
         text-light-subtle 
-        dark:text-dark-subtle
-        dark:focus:text-black
+        dark:text-white
+        dark:focus:text-white
         focus:text-primary"
       id={name}
       name={name}

@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { useEffect } from "react";
 import {BsTrash, BsPencilSquare} from "react-icons/bs";
-import { getActors } from "../../api/actor";
-import { useNotification } from '../../hooks';
+import { deleteActor, getActors, searchActor } from "../../api/actor";
+import { useNotification, useSearch } from '../../hooks';
 import AppSearchForm from "../form/AppSearchForm";
+import ConfirmModal from "../modals/ConfirmModal";
 import UpdateActor from "../modals/UpdateActor";
 import NextAndPrevButton from "../NextAndPrevButton";
+import NotFoundText from "../NotFoundText";
 
 let currentPageNo = 0;
 const limit = 20;
@@ -30,11 +32,15 @@ export default function Actors() {
 
   //storing all the data from the backend api
   const [actors, setActors] = useState([]);
+  const [results, setResults] = useState([]);
   const [reachedToEnd, setReachedToEnd] = useState(false);
+  const [busy, setBusy] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [selectedProfile, setSelectedProfile] = useState(null);
 
   const { updateNotification } = useNotification()
+  const { handleSearch, resetSearch, resultNotFound } = useSearch();
 
   const fetchActors = async (pageNo) => {
     //0 for page number, 5 for the limit
@@ -71,8 +77,24 @@ export default function Actors() {
     console.log(profile);
   };
 
-  const hideUpdateModal = (profile) => {
+  const hideUpdateModal = () => {
     setShowUpdateModal(false);
+  };
+
+  const handleOnSearchSubmit = (value) => {
+    //console.log(value);
+    //use this value "value" to send to our backend api to search for actors
+
+    //handleSearch will take the value, put it into the searchActor and then put everything in the setResults
+    handleSearch(searchActor, value, setResults);
+
+  };
+
+  //in SearchProvider, have function resetSearch
+  const handleSearchFormReset = () => {
+    resetSearch();
+    //then when reset the form and clear the inputted text, set the results to the default state of an empty array
+    setResults([]);
   };
 
   const handleOnActorUpdate = (profile) => {
@@ -88,37 +110,90 @@ export default function Actors() {
     setActors([...updatedActors]);
   };
 
-  
+  const handleOnDeleteClick = (profile) => {
+    //console.log(profile);
+    setSelectedProfile(profile);
+    setShowConfirmModal(true);
+  };
+
+  const handleOnDeleteConfirm = async () => {
+    //Don't Want this at All!!!!
+    //An example of how to delete Actors
+
+    // //only need to send the id
+    // setBusy(true);
+    // const {error, message } = await deleteActor(selectedProfile.id);
+    // setBusy(false);
+
+    // if (error) return updateNotification("Error, could not delete the actor", error);
+
+    // updateNotification("success at deleting the actor", message)
+    // hideConfirmModal();
+
+    // //want to now show the updated actors' list
+    // fetchActors(currentPageNo)
+  };
+
+  const hideConfirmModal = () => {
+    setShowConfirmModal(false);
+  };
 
   useEffect(() => {
     fetchActors(currentPageNo);
   }, []);
 
+  //if there is something in results (result.length give back something other than 0), then render the results
+  //else, render the actors
+  //if there is something in results, don't want to render the next and previous button
   return (
     <>
       <div className="p-5">
         <div className="flex justify-end mb-5">
-          <AppSearchForm placeholder={"Search Actors..."}/>
+          <AppSearchForm
+            onReset={handleSearchFormReset}
+            onSubmit={handleOnSearchSubmit}
+            placeholder={"Search Actors..."}
+            showResetIcon={results.length || resultNotFound}
+          />
         </div>
-        
+        <NotFoundText text="Record not found" visible={resultNotFound}/>
         <div className="grid grid-cols-4 gap-5 p-5">
-          {actors.map(actor => {
-            return (
-              <ActorProfile
+          {results.length || resultNotFound
+            ? results.map((actor) => (
+            <ActorProfile
+                profile={actor}
+                key={actor.id}
+                onEditClick= {() => handleOnEditClick(actor)}
+                onDeleteClick = {() => handleOnDeleteClick(actor)}
+              />
+            ))
+            : actors.map((actor) => (
+            <ActorProfile
                 profile={actor}
                 key={actor.id}
                 onEditClick={() => handleOnEditClick(actor)}
+                onDeleteClick = {() => handleOnDeleteClick(actor)}
               />
-            );
-          })}
+          ))}
+          
         </div>
 
-        <NextAndPrevButton
+        {!results.length && !resultNotFound ? (<NextAndPrevButton
           className="mt-5"
           onNextClick={handleOnNextClick}
           onPrevClick={handleOnPrevClick}
-        />
+        />)
+          : null}
       </div>
+
+      <ConfirmModal
+        visible={showConfirmModal}
+        title="Are you sure?"
+        subtitle="This action will remove this profile permanently"
+        busy={busy}
+        onConfirm={handleOnDeleteConfirm}
+        onCancel = {hideConfirmModal}
+      />
 
       <UpdateActor
         visible={showUpdateModal}
@@ -131,7 +206,7 @@ export default function Actors() {
 }
 
 //when taking something(s) in, alwasy use {} around it
-const ActorProfile = ({profile, onEditClick}) => {
+const ActorProfile = ({profile, onEditClick, onDeleteClick}) => {
   //create a new state for showOptions, want to show and hide options
   //default value is false
   const [showOptions, setShowOptions] = useState(false);
@@ -180,7 +255,7 @@ const ActorProfile = ({profile, onEditClick}) => {
           </p>
         </div>
 
-        <Options onEditClick={onEditClick } visible={showOptions} />
+        <Options onEditClick={onEditClick} visible={showOptions} onDeleteClick={onDeleteClick} />
       </div>
     </div>
   )

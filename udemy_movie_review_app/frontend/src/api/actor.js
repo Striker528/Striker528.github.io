@@ -33,6 +33,20 @@ export const updateActor = async (id, formData) => {
   }
 };
 
+export const deleteActor = async (id) => {
+  const token = getToken();
+try {
+  const { data } = await client.delete("/actor/"+id, {
+    headers: {
+      authorization: "Bearer " + token,
+    },
+  });
+  return data;
+} catch (error) {
+    return catchError(error);
+}
+};
+
 
 export const searchActor = async (query) => {
   //endpoint to send the data
@@ -45,7 +59,6 @@ export const searchActor = async (query) => {
     const { data } = await client(`/actor/search?name=${query}`, {
       headers: {
         authorization: "Bearer " + token,
-        "content-type": "multipart/form-data",
       },
     });
     return data;

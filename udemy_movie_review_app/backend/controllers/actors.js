@@ -104,11 +104,23 @@ exports.deleteActor = async (req, res) => {
 
 
 exports.searchActor = async (req, res) => {
-    const { query } = req;
-    actor_name = query.name;
+    const { name } = req.query;
+    actor_name = name;
     //for an exact match, wrap what we want to find in double quotes
-    const result = await Actor.find({ $text: { $search: `"${actor_name}"` } })
+    //this is case: have to type full part of an actors name: 
+    //leonardo decaprio:
+    //leonardo works
+    //leo does not
+    //const result = await Actor.find({ $text: { $search: `"${actor_name}"` } });
     
+    //type in part of name:
+    //options: i for ignoring capitlizations
+    //need to firstly check the query because if we search an empty query, it will get every single actor, don't want that
+    if (!name.trim()) {
+        return sendError(res, "Invalid request!");
+    }
+    
+    const result = await Actor.find({name: {$regex: name, $options: 'i'}});
     const actors = result.map((actor) => formatActor(actor));
 
   res.json({results: actors});

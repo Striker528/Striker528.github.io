@@ -40,8 +40,15 @@ export default function SearchProvider({ children }) {
 
         if (error) return updateNotification('error', error);
 
-        if (!results.length) return setResultNotFound(true);
+      if (!results.length) {
+        setResults([]);
+        //if there is an updaterFun, then reset it
+        updaterFun && updaterFun([]);
+        return setResultNotFound(true);
+      }
 
+      //there are results
+      setResultNotFound(false);
       setResults(results)
       
       //update state
@@ -63,7 +70,8 @@ export default function SearchProvider({ children }) {
       //making this an optional field
       //only if there is an updaterFun then we can call updaterFun()
       updaterFun && updaterFun([]);
-      resetSearch();
+      //don't forget need to return as there is nothing else to do but call resetSearch
+      return resetSearch();
     }
 
     //else
