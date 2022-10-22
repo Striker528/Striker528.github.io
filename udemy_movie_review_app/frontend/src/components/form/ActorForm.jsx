@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useEffect } from "react";
 import { ImSpinner3 } from "react-icons/im";
 import { useNotification } from "../../hooks";
 import { commonInputClasses } from "../../utils/theme";
@@ -26,7 +27,7 @@ const validateActor = ({ avatar, name, about, gender }) => {
     return { error: null };
 }
 
-export default function ActorForm({ title, btnTitle, onSubmit, busy }) {
+export default function ActorForm({ title, btnTitle, onSubmit, busy, initialState }) {
   //handling state of the form
     const [actorInfo, setActorInfo] = useState({ ...defaultActorInfo });
     const [selectedAvatarForUi, setselectedAvatarForUi] = useState("");
@@ -75,6 +76,13 @@ export default function ActorForm({ title, btnTitle, onSubmit, busy }) {
       }
       onSubmit(formData);
   };
+
+  useEffect(() => {
+    if (initialState) {
+      setActorInfo({ ...initialState, avatar: null });
+      setselectedAvatarForUi(initialState.avatar);
+    }
+  }, [initialState]);
 
   const { name, about, gender } = actorInfo;
 

@@ -72,8 +72,12 @@ exports.updateActor = async (req, res) => {
     actor.name = name;
     actor.about = about;
     actor.gender = gender;
+
     await actor.save()
-    res.status(201).json(formatActor(actor));
+
+    //initally just sending json: res.status(201).json(formatActor(actor));
+    //if want to accept the actor:
+    res.status(201).json({actor: formatActor(actor)});
 }
 
 exports.deleteActor = async (req, res) => { 

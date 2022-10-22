@@ -3,6 +3,8 @@ import { useEffect } from "react";
 import {BsTrash, BsPencilSquare} from "react-icons/bs";
 import { getActors } from "../../api/actor";
 import { useNotification } from '../../hooks';
+import AppSearchForm from "../form/AppSearchForm";
+import UpdateActor from "../modals/UpdateActor";
 import NextAndPrevButton from "../NextAndPrevButton";
 
 let currentPageNo = 0;
@@ -29,6 +31,8 @@ export default function Actors() {
   //storing all the data from the backend api
   const [actors, setActors] = useState([]);
   const [reachedToEnd, setReachedToEnd] = useState(false);
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [selectedProfile, setSelectedProfile] = useState(null);
 
   const { updateNotification } = useNotification()
 
@@ -59,32 +63,75 @@ export default function Actors() {
     
     currentPageNo -= 1;
     fetchActors(currentPageNo);
-  }
+  };
+
+  const handleOnEditClick = (profile) => {
+    setShowUpdateModal(true);
+    setSelectedProfile(profile)
+    console.log(profile);
+  };
+
+  const hideUpdateModal = (profile) => {
+    setShowUpdateModal(false);
+  };
+
+  const handleOnActorUpdate = (profile) => {
+    //map through all of the actors
+    const updatedActors = actors.map(actor => {
+      if (profile.id === actor.id) {
+        //don't want to return this actor, return this new profile for this actor
+        return profile
+      }
+      return actor;
+    })
+
+    setActors([...updatedActors]);
+  };
+
+  
 
   useEffect(() => {
     fetchActors(currentPageNo);
   }, []);
 
   return (
-    <div className = "p-5">
-      <div className="grid grid-cols-4 gap-5 p-5">
-        {actors.map(actor => {
-          return <ActorProfile profile={actor} key={actor.id } />
-        })}
+    <>
+      <div className="p-5">
+        <div className="flex justify-end mb-5">
+          <AppSearchForm placeholder={"Search Actors..."}/>
+        </div>
+        
+        <div className="grid grid-cols-4 gap-5 p-5">
+          {actors.map(actor => {
+            return (
+              <ActorProfile
+                profile={actor}
+                key={actor.id}
+                onEditClick={() => handleOnEditClick(actor)}
+              />
+            );
+          })}
+        </div>
+
+        <NextAndPrevButton
+          className="mt-5"
+          onNextClick={handleOnNextClick}
+          onPrevClick={handleOnPrevClick}
+        />
       </div>
 
-      <NextAndPrevButton
-        className="mt-5"
-        onNextClick={handleOnNextClick}
-        onPrevClick={handleOnPrevClick}
+      <UpdateActor
+        visible={showUpdateModal}
+        onClose={hideUpdateModal}
+        initialState={selectedProfile}
+        onSuccess={handleOnActorUpdate}
       />
-    </div>
-    
+    </>    
   );
 }
 
 //when taking something(s) in, alwasy use {} around it
-const ActorProfile = ({profile}) => {
+const ActorProfile = ({profile, onEditClick}) => {
   //create a new state for showOptions, want to show and hide options
   //default value is false
   const [showOptions, setShowOptions] = useState(false);
@@ -133,7 +180,7 @@ const ActorProfile = ({profile}) => {
           </p>
         </div>
 
-        <Options visible={showOptions} />
+        <Options onEditClick={onEditClick } visible={showOptions} />
       </div>
     </div>
   )
