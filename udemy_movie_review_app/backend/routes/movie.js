@@ -5,7 +5,8 @@ const {
   updateMovieWithoutPoster,
   updateMovieWithPoster,
   removeMovie,
-  getMovies
+  getMovies,
+  getMovieForUpdate
 } = require("../controllers/movie");
 const { isAuth, isAdmin } = require("../middlewares/auth");
 const { parseData } = require("../middlewares/helper");
@@ -68,6 +69,13 @@ router.get(
   isAuth,
   isAdmin,
   getMovies
+);
+
+router.get(
+  '/for-update/:movieId',
+  isAuth,
+  isAdmin,
+  getMovieForUpdate
 );
 
 module.exports = router;

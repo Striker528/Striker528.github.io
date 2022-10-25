@@ -341,3 +341,18 @@ exports.getMovies = async (req, res) => {
 
   res.json({ movies: results });
 }
+
+exports.getMovieForUpdate = async (req, res) => {
+  const { movieId } = req.params;
+
+  if (!isValidObjectId(movieId)) return sendError(res, "Id is invalid");
+
+  //in what we get, have also writer's, director's, and actors 
+  //need to handle all of these things: use populate
+  //pass the path we want to populate
+  //populate("director") will add in the full profile of the director, not just the id
+  //don't have actors, have cast, which is an array of actors, so to access each actor: cast.actor
+  const movie = await Movie.findById(movieId).populate("director writers cast.actor");
+
+  res.json({ movie });
+}
