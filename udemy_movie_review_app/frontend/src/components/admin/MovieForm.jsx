@@ -26,6 +26,7 @@ import WriterSelector from "../WriterSelector";
 import ViewAllBtn from "../ViewAllButton";
 import LabelWithBadge from "../LabelWithBadge";
 import { validateMovie } from "../../utils/validator";
+import { useEffect } from "react";
 
 
 
@@ -48,7 +49,7 @@ const defaultMovieInfo = {
 
 //with taking in onSubmit, now this movieInfo will be available inside our movieUpload component
 //have busy state from MovieUpload
-export default function MovieForm({onSubmit, busy}) {
+export default function MovieForm({onSubmit, busy, initialState}) {
   //default state
   //movieInfo will be very big, store it in variable defaultMovieInfo
   const [movieInfo, setMovieInfo] = useState({ ...defaultMovieInfo });
@@ -251,6 +252,17 @@ export default function MovieForm({onSubmit, busy}) {
     setMovieInfo({ ...movieInfo, cast: [...newCast] });
   };
 
+  useEffect(() => {
+    if (initialState) {
+      setMovieInfo({
+        ...initialState,
+        releseDate: initialState.releseDate.split("T")[0],
+        poster: null
+      });
+      setSelectedPosterForUI(initialState.poster);
+    }
+  }, [initialState])
+
   //don't need this after the refactoring
   // const handleProfileChange = ({ target }) => {
   //   //when typing into the director field, to test, can take in the onChange item
@@ -297,6 +309,7 @@ export default function MovieForm({onSubmit, busy}) {
     type,
     language,
     status,
+    releseDate
   } = movieInfo;
 
   //For writers and actors, only make the boxes visible if there are any inputted actors or directors
@@ -390,6 +403,7 @@ export default function MovieForm({onSubmit, busy}) {
               className={commonInputClasses + " border-2 rounded p-1 w-auto"}
               onChange={handleChange}
               name="releseDate"
+              value={releseDate}
             />
           </div>
           

@@ -1,8 +1,9 @@
-const { sendError } = require("../utils/helper");
+const { sendError, formatActor } = require("../utils/helper");
 const cloudinary = require("../cloud");
 const Movie = require("../models/movie");
 const { isValidObjectId } = require("mongoose");
 const movie = require("../models/movie");
+const { url } = require("../cloud");
 
 exports.uploadTrailer = async (req, res) => {
   const { file } = req;
@@ -165,17 +166,18 @@ exports.updateMovieWithoutPoster = async (req, res) => {
 
 };
 
-exports.updateMovieWithPoster = async (req, res) => {
+exports.updateMovie = async (req, res) => {
   //movieId in req.params
-  const { movieId } = req.params
+  const { movieId } = req.params;
+  const { file } = req;
   if (!isValidObjectId(movieId)) {
     return sendError(res, 'Invalid Movie ID!')
   }
 
   //need a poster if we are editing a movie and changing its poster
-  if (!req.file) {
-    return sendError(res, 'Movie poster is missing')
-  }
+  // if (!req.file) {
+  //   return sendError(res, 'Movie poster is missing')
+  // }
 
   const movie = await Movie.findById(movieId);
   if (!movie) {
@@ -206,7 +208,7 @@ exports.updateMovieWithPoster = async (req, res) => {
   movie.type = type
   movie.genres = genres
   movie.cast = cast
-  movie.trailer = trailer
+  //movie.trailer = trailer
   movie.language = language
 
   //remember that the director and writers are not required
@@ -226,49 +228,53 @@ exports.updateMovieWithPoster = async (req, res) => {
   }
 
   // update poster
-  //first see if there is already a poster, and a poster was inputted
-  //inside the movie, there is the poster object, which is optional
-  //inside the poster object is the public_id of the poster
-  const { public_id } = movie.poster?.public_id
-  if (public_id) {
-    //a poster was inputted, so remove the old one
-    const { result } = await cloudinary.uploader.destroy(public_id);
-    if (result !== 'ok') {
-      return sendError(res, 'Could not update poster at the moment!')
+  if (file) {
+    //first see if there is already a poster, and a poster was inputted
+    //inside the movie, there is the poster object, which is optional
+    //inside the poster object is the public_id of the poster
+    const posterID = movie.poster?.public_id
+    if (posterID) {
+      //a poster was inputted, so remove the old one
+      const { result } = await cloudinary.uploader.destroy(posterID);
+      if (result !== 'ok') {
+        return sendError(res, 'Could not update poster at the moment!')
+      }
     }
-  }
-  //old poster was destroyed, or it was found that there was not an old poster
-  //so now upload new poster if there was one that was inputted
-  //check for new poster at the beginning
-  const { } = await cloudinary.uploader.upload(req.file.path)
+    //old poster was destroyed, or it was found that there was not an old poster
+    //so now upload new poster if there was one that was inputted
+    //check for new poster at the beginning
+    //const { } = await cloudinary.uploader.upload(req.file.path)
 
-  const {
-    secure_url: url,
-    public_id: Public_ID,
-    responsive_breakpoints,
-  } = await cloudinary.uploader.upload(req.file.path, {
-    transformation: {
-      width: 1280,
-      height: 720,
-    },
-    responsive_breakpoints: {
-      create_derived: true,
-      max_width: 640,
-      max_images: 3,
-    },
-  });
+    //uploading poster
+    const {
+      secure_url: url,
+      posterID: Public_ID,
+      responsive_breakpoints,
+    } = await cloudinary.uploader.upload(req.file.path, {
+      transformation: {
+        width: 1280,
+        height: 720,
+      },
+      responsive_breakpoints: {
+        create_derived: true,
+        max_width: 640,
+        max_images: 3,
+      },
+    });
 
-  const finalPoster = { url, Public_ID, responsive: [] };
+    const finalPoster = { url, Public_ID, responsive: [] };
 
-  const { breakpoints } = responsive_breakpoints[0];
-  if (breakpoints.length) {
-    for (let imgObj of breakpoints) {
-      const { secure_url } = imgObj;
-      finalPoster.responsive.push(secure_url);
+    const { breakpoints } = responsive_breakpoints[0];
+    if (breakpoints.length) {
+      for (let imgObj of breakpoints) {
+        const { secure_url } = imgObj;
+        finalPoster.responsive.push(secure_url);
+      }
     }
-  }
 
-  movie.poster = finalPoster;
+    movie.poster = finalPoster;
+  }
+  
 
   //now save the movie
   await movie.save()
@@ -354,5 +360,32 @@ exports.getMovieForUpdate = async (req, res) => {
   //don't have actors, have cast, which is an array of actors, so to access each actor: cast.actor
   const movie = await Movie.findById(movieId).populate("director writers cast.actor");
 
-  res.json({ movie });
+  //need to send back the movie in a certain way
+  //writers will be an array, so need map
+  //in the frontend, have cast form, with profile, roleAs, leadActor
+  res.json({
+    movie: {
+      id: movie._id,
+      title: movie.title,
+      storyLine: movie.storyLine,
+      poster: movie.poster?.url,
+      releseDate: movie.releseDate,
+      status: movie.status,
+      type: movie.type,
+      language: movie.language,
+      genres: movie.genres,
+      tags: movie.tags,
+      director: formatActor(movie.director),
+      writers: movie.writers.map(w => formatActor(w)),
+      cast: movie.cast.map(c => {
+        return {
+          id: c.id,
+          profile: formatActor(c.actor),
+          roleAs: c.roleAs,
+          leadActor: c.leadACtor
+        }
+      })
+
+    }
+});
 }

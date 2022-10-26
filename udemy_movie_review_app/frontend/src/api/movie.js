@@ -39,6 +39,21 @@ export const uploadMovie = async (formData) => {
   }
 };
 
+export const getMovieForUpdate = async (id) => {
+  const token = getToken();
+  try {
+    //don't need to include get for client.get, can just use client
+    const { data } = await client("/movie/for-update/"+id, {
+      headers: {
+        authorization: "Bearer " + token,
+      },
+    });
+    return data;
+  } catch (error) {
+    return catchError(error);
+  }
+};
+
 export const getMovies = async (pageNo, limit) => {
   const token = getToken();
   try {

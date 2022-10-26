@@ -2,16 +2,15 @@ const express = require("express");
 const {
   uploadTrailer,
   createMovie,
-  updateMovieWithoutPoster,
-  updateMovieWithPoster,
   removeMovie,
   getMovies,
-  getMovieForUpdate
+  getMovieForUpdate,
+  updateMovie
 } = require("../controllers/movie");
 const { isAuth, isAdmin } = require("../middlewares/auth");
 const { parseData } = require("../middlewares/helper");
 const { uploadVideo, uploadImage } = require("../middlewares/multer");
-const { validateMovie, validate } = require("../middlewares/validator");
+const { validateMovie, validate, validateTrailer } = require("../middlewares/validator");
 const router = express.Router();
 
 router.post(
@@ -28,33 +27,34 @@ router.post(
   uploadImage.single("poster"),
   parseData,
   validateMovie,
+  validateTrailer,
   validate,
   createMovie
 );
 //put and patch
 //change entire document: put
 //update some of the things: patch
-router.patch(
-  "/update-movie-without-poster/:movieId",
-  isAuth,
-  isAdmin,
-  //testing, need to remove parseData
-  //it does not do well when submitting Json data that we must do to test
-  //parseData,
-  validateMovie,
-  validate,
-  updateMovieWithoutPoster
-);
+// router.patch(
+//   "/update-movie-without-poster/:movieId",
+//   isAuth,
+//   isAdmin,
+//   //testing, need to remove parseData
+//   //it does not do well when submitting Json data that we must do to test
+//   //parseData,
+//   validateMovie,
+//   validate,
+//   updateMovieWithoutPoster
+// );
 
 router.patch(
-  "/update-movie-with-poster/:movieId",
+  "/update/:movieId",
   isAuth,
   isAdmin,
   uploadImage.single("poster"),
   parseData,
   validateMovie,
   validate,
-  updateMovieWithPoster
+  updateMovie
 );
 
 router.delete(

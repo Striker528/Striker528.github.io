@@ -2,10 +2,10 @@ import React from 'react'
 import MovieForm from '../admin/MovieForm'
 import ModalContainer from './ModalContainer'
 
-export default function UpdateMovies({visible}) {
+export default function UpdateMovies({visible, initialState}) {
   return (
       <ModalContainer visible={visible}>
-          <MovieForm/>
+      <MovieForm initialState={initialState} />
     </ModalContainer>
   )
 }
