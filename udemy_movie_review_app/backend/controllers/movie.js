@@ -371,8 +371,11 @@ exports.getMovieForUpdate = async (req, res) => {
   //need to send back the movie in a certain way
   //writers will be an array, so need map
   //in the frontend, have cast form, with profile, roleAs, leadActor
-  //make sure spelling is right, in the return section, I had leadActor: c.leadActor as 
+  //make sure spelling is right, in the return section, I had leadActor: c.leadActor as
     // leadActor: c.leadACtor and that capital C messed me up for an hour
+  
+  //one thing I want to do is show the director in the update form, need to ask later
+  //
   res.json({
     movie: {
       id: movie._id,
