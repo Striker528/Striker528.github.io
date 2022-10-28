@@ -55,6 +55,19 @@ export default function Movies() {
     setShowUpdateModal(true);
   };
 
+  const handleOnUpdate = (movie) => {
+    //when a movie gets updated, want to render the new updated movie and not the old one
+    //want to map to an array and create a brand new array
+    const updatedMovies = movies.map(m => {
+      if (m.id === movie.id) return movie;
+      return m;
+    });
+
+    setMovies([...updatedMovies]);
+  };
+
+  const hideUpdateForm = () => setShowUpdateModal(false);
+
   useEffect(() => {
     fetchMovies(currentPageNo);
   }, []);
@@ -83,7 +96,12 @@ export default function Movies() {
       />
       </div>
       
-      <UpdateMovies visible={showUpdateModal} initialState={selectedMovie} />
+      <UpdateMovies
+        visible={showUpdateModal}
+        initialState={selectedMovie}
+        onSuccess={handleOnUpdate}
+        onClose={hideUpdateForm}
+      />
     </>
     
     

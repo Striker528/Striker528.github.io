@@ -279,7 +279,15 @@ exports.updateMovie = async (req, res) => {
   //now save the movie
   await movie.save()
 
-  res.json({ message: 'Movie is updated', movie })
+  //don't need full movie
+  res.json({
+    message: 'Movie is updated', movie: {
+      id: movie._id,
+      title: movie.title,
+      poster: movie.poster?.url,
+      genres: movie.genres,
+      status: movie.status
+  } })
 
 };
 
@@ -363,6 +371,8 @@ exports.getMovieForUpdate = async (req, res) => {
   //need to send back the movie in a certain way
   //writers will be an array, so need map
   //in the frontend, have cast form, with profile, roleAs, leadActor
+  //make sure spelling is right, in the return section, I had leadActor: c.leadActor as 
+    // leadActor: c.leadACtor and that capital C messed me up for an hour
   res.json({
     movie: {
       id: movie._id,
@@ -376,16 +386,15 @@ exports.getMovieForUpdate = async (req, res) => {
       genres: movie.genres,
       tags: movie.tags,
       director: formatActor(movie.director),
-      writers: movie.writers.map(w => formatActor(w)),
-      cast: movie.cast.map(c => {
+      writers: movie.writers.map((w) => formatActor(w)),
+      cast: movie.cast.map((c) => {
         return {
           id: c.id,
           profile: formatActor(c.actor),
           roleAs: c.roleAs,
-          leadActor: c.leadACtor
-        }
-      })
-
-    }
-});
-}
+          leadActor: c.leadActor
+        };
+      }),
+    },
+  });
+};

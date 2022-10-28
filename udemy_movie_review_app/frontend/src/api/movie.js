@@ -54,6 +54,23 @@ export const getMovieForUpdate = async (id) => {
   }
 };
 
+//have file as well if we want to update the poster of the movie: so need formData
+export const updateMovie = async (id, formData) => {
+  const token = getToken();
+  try {
+    //don't need to include get for client.get, can just use client
+    const { data } = await client.patch("/movie/update/"+id, formData, {
+      headers: {
+        authorization: "Bearer " + token,
+        "content-type": "multipart/form-data",
+      },
+    });
+    return data;
+  } catch (error) {
+    return catchError(error);
+  }
+};
+
 export const getMovies = async (pageNo, limit) => {
   const token = getToken();
   try {

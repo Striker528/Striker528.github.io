@@ -49,7 +49,7 @@ const defaultMovieInfo = {
 
 //with taking in onSubmit, now this movieInfo will be available inside our movieUpload component
 //have busy state from MovieUpload
-export default function MovieForm({onSubmit, busy, initialState}) {
+export default function MovieForm({onSubmit, busy, initialState, btnTitle}) {
   //default state
   //movieInfo will be very big, store it in variable defaultMovieInfo
   const [movieInfo, setMovieInfo] = useState({ ...defaultMovieInfo });
@@ -410,7 +410,7 @@ export default function MovieForm({onSubmit, busy, initialState}) {
 
           <Submit
             busy={busy}
-            value="Upload"
+            value={btnTitle}
             onClick={handleSubmit}
             type="button"
           />
