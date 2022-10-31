@@ -205,7 +205,7 @@ export default function Actors() {
   );
 }
 
-//when taking something(s) in, alwasy use {} around it
+//when taking something(s) in, always use {} around it
 const ActorProfile = ({profile, onEditClick, onDeleteClick}) => {
   //create a new state for showOptions, want to show and hide options
   //default value is false

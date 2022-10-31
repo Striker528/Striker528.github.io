@@ -108,22 +108,22 @@ export default function Movies() {
   return (
     <>
       <div className="space-y-3 p-5">
-      {movies.map(movie => {
-        return (
-          <MovieListItem
-            key={movie.id}
-            movie={movie}
-            onEditClick={() => handleOnEditClick(movie)}
-            onDeleteClick={() => handleOnDeleteClick(movie)}
-          />
-        );
-      })}
+        {movies.map(movie => {
+          return (
+            <MovieListItem
+              key={movie.id}
+              movie={movie}
+              onEditClick={() => handleOnEditClick(movie)}
+              onDeleteClick={() => handleOnDeleteClick(movie)}
+            />
+          );
+        })}
 
-      <NextAndPrevButton
-        className="mt-5"
-        onNextClick={handleOnNextClick}
-        onPrevClick={handleOnPrevClick}
-      />
+        <NextAndPrevButton
+          className="mt-5"
+          onNextClick={handleOnNextClick}
+          onPrevClick={handleOnPrevClick}
+        />
       </div>
 
       <ConfirmModal
@@ -142,7 +142,5 @@ export default function Movies() {
         onClose={hideUpdateForm}
       />
     </>
-    
-    
   );
 }
