@@ -5,7 +5,8 @@ const {
   removeMovie,
   getMovies,
   getMovieForUpdate,
-  updateMovie
+  updateMovie,
+  searchMovies
 } = require("../controllers/movie");
 
 const { isAuth, isAdmin } = require("../middlewares/auth");
@@ -79,6 +80,14 @@ router.get(
   isAuth,
   isAdmin,
   getMovieForUpdate
+);
+
+//there will be some private movies, and those movies are for admin only
+router.get(
+  "/search",
+  isAuth,
+  isAdmin,
+  searchMovies
 );
 
 module.exports = router;

@@ -100,3 +100,19 @@ export const deleteMovie = async (id) => {
     return catchError(error);
   }
 };
+
+
+export const searchMovieForAdmin = async (title) => {
+  const token = getToken();
+  try {
+    //remember that don't need .get for getting function, just client(...) works
+    const { data } = await client(`/movie/search?title=${title}`, {
+      headers: {
+        authorization: "Bearer " + token,
+      },
+    });
+    return data;
+  } catch (error) {
+    return catchError(error);
+  }
+};

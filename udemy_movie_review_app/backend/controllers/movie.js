@@ -401,3 +401,35 @@ exports.getMovieForUpdate = async (req, res) => {
     },
   });
 };
+
+
+exports.searchMovies = async (req, res) => {
+  //same as backend/controllers/actor.js -> searchActor
+  const { title } = req.query;
+  //for an exact match, wrap what we want to find in double quotes
+  //this is case: have to type full part of an actors name:
+  //leonardo decaprio:
+  //leonardo works
+  //leo does not
+  //const result = await Actor.find({ $text: { $search: `"${actor_name}"` } });
+  
+  //type in part of name:
+  //options: i for ignoring capitalizations
+  //need to firstly check the query because if we search an empty query, it will get every single actor, don't want that
+  if (!title.trim()) {
+      return sendError(res, "Invalid request!");
+  }
+  
+  const movies = await Movie.find({title: {$regex: title, $options: 'i'}});
+  
+  res.json({
+    results: movies.map(m => {
+      return {
+        id: m._id,
+        title: m.title,
+        poster: m.poster?.url,
+        genres: m.genres,
+        status: m.status
+    }
+  })});
+}
