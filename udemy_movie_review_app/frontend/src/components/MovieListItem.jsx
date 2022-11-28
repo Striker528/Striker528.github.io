@@ -3,15 +3,19 @@ import { BsTrash, BsPencilSquare, BsBoxArrowUpRight } from "react-icons/bs";
 import { deleteMovie } from '../api/movie';
 import { useNotification } from '../hooks';
 import ConfirmModal from './modals/ConfirmModal';
+import UpdateMovies from './modals/UpdateMovies';
+//import UpdateMovies from "../modals/UpdateMovies";
 
 //will handle edit and delete in this file
 
 
-const MovieListItem = ({ movie, afterDelete, onDeleteClick, onEditClick, onOpenCLick }) => {
+const MovieListItem = ({ movie, afterDelete, afterUpdate }) => {
     const { updateNotification } = useNotification();
 
     const [showConfirmModal, setShowConfirmModal] = useState(false);
+    const [showUpdateModal, setShowUpdateModal] = useState(false);
     const [busy, setBusy] = useState(false);
+    const [selectedMovieId, setSelectedMovieId] = useState(null);
 
     const handleOnDeleteConfirm = async () => {
         setBusy(true);
@@ -30,6 +34,18 @@ const MovieListItem = ({ movie, afterDelete, onDeleteClick, onEditClick, onOpenC
         //fetchMovies(currentPageNo);
     };
 
+    const handleOnEditClick = () => {
+        //here, need to display the MovieListItem in Movies.jsx that I commented out
+        setShowUpdateModal(true);
+        setSelectedMovieId(movie.id);
+    };
+
+    const handleOnUpdate = async (movie) => {
+        afterUpdate(movie);
+        setShowUpdateModal(false);
+        setSelectedMovieId(null);
+    };
+
     const displayConfirmModal = () => {
         setShowConfirmModal(true);
     };
@@ -42,7 +58,7 @@ const MovieListItem = ({ movie, afterDelete, onDeleteClick, onEditClick, onOpenC
     //padding of 0 so that there is no padding for any of the components
     return (
         <>
-            <MovieCard movie={movie} onDeleteClick={displayConfirmModal} />
+            <MovieCard movie={movie} onDeleteClick={displayConfirmModal} onEditClick={handleOnEditClick } />
             <div className="p-0">
                 <ConfirmModal
                     visible={showConfirmModal}
@@ -51,6 +67,11 @@ const MovieListItem = ({ movie, afterDelete, onDeleteClick, onEditClick, onOpenC
                     title={"Are you sure you want to delete this movie?"}
                     subtitle={"This action will remove the movie permanently!"}
                     busy={busy}
+                />
+                <UpdateMovies
+                    movieId={selectedMovieId}
+                    visible={showUpdateModal}
+                    onSuccess={handleOnUpdate}
                 />
             </div>
         </>

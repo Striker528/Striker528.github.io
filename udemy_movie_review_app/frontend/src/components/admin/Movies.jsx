@@ -100,7 +100,25 @@ export default function Movies() {
   // const hideUpdateForm = () => setShowUpdateModal(false);
   // const hideConfirmModal = () => setShowConfirmModal(false);
 
-  const handleAfterDelete = () => {
+  // const handleAfterDelete = () => {
+  //   fetchMovies();
+  // };
+
+  
+  //don't need to worry about this
+
+  // const handleAfterUpdate = (movie) => {
+  //   //when a movie gets updated, want to render the new updated movie and not the old one
+  //   //want to map to an array and create a brand new array
+  //   const updatedMovies = movies.map(m => {
+  //     if (m.id === movie.id) return movie;
+  //     return m;
+  //   });
+
+  //   setMovies([...updatedMovies]);
+  // };
+
+  const handleUIUpdate = () => {
     fetchMovies();
   };
   
@@ -122,7 +140,8 @@ export default function Movies() {
             <MovieListItem
               key={movie.id}
               movie={movie}
-              afterDelete={handleAfterDelete}
+              afterDelete={handleUIUpdate}
+              afterUpdate={handleUIUpdate}
               // onEditClick={() => handleOnEditClick(movie)}
               // onDeleteClick={() => handleOnDeleteClick(movie)}
             />

@@ -84,9 +84,13 @@ export default function LatestUploads() {
       fetchLatestUploads();
     }, []);
   
-  const handleAfterDelete = () => {
+  // const handleAfterDelete = () => {
+  //   fetchLatestUploads();
+  // };
+
+  const handleUIUpdate = () => {
     fetchLatestUploads();
-  }
+  };
 
     //need to wrap the avatar in 2 curly braces
     // <MovieListItem
@@ -110,7 +114,8 @@ export default function LatestUploads() {
             <MovieListItem
               key={movie.id}
               movie={movie}
-              afterDelete={handleAfterDelete}
+              afterDelete={handleUIUpdate}
+              afterUpdate={handleUIUpdate}
               // onEditClick={() => handleOnEditClick(movie)}
               // onDeleteClick={() => handleOnDeleteClick(movie)}
             />
