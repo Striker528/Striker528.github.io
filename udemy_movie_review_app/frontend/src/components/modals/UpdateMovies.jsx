@@ -8,7 +8,8 @@ import ModalContainer from './ModalContainer'
 
 //not have initalState
 //use selectedMovie.id instead of initialState.id or movieId
-export default function UpdateMovies({ visible, onSuccess, onClose, movieId }) {
+//not using onClose now
+export default function UpdateMovies({ visible, onSuccess, movieId }) {
   const [busy, setBusy] = useState(false);
   const [ready, setReady] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState(null);
@@ -30,7 +31,7 @@ export default function UpdateMovies({ visible, onSuccess, onClose, movieId }) {
     //update the ui on the frontend
     onSuccess(movie);
 
-    onClose();
+    // onClose();
   };
 
   const fetchMovieToUpdate = async () => {

@@ -23,11 +23,12 @@ const MovieListItem = ({ movie, afterDelete, afterUpdate }) => {
         setBusy(false);
         
         if (error) return updateNotification("error", error);
+        //need this first
+        hideConfirmModal();
         updateNotification("success", message);
         //afterDelete is the function either the MoviesPage, the search or any other page will use
         //to re-render the movies after the movie is taken out or edited
         afterDelete(movie);
-        hideConfirmModal();
     
         //now need to update as if I just delete, the entire page will break, need to render all the movies again
         //want to now show the updated movies' list
