@@ -75,10 +75,10 @@ const movieSchema = mongoose.Schema(
 );
 
 /*
-//say movie is Mission imbossible, and Tom cruise has objectId of 1235
+//say movie is Mission impossible, and Tom cruise has objectId of 1235
 cast = [{actor: ObjectId('1235), roleAs: 'Ether Hunt', leadActor: true}]
 
-store everyone as an Actor for now, and then use later for a differetn purpose
+store everyone as an Actor for now, and then use later for a different purpose
 */
 
 module.exports = mongoose.model('Movie', movieSchema)
