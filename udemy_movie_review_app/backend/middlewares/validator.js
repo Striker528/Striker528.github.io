@@ -153,6 +153,13 @@ exports.validateTrailer = check("trailer")
       throw Error("Trailer url is invalid, at the end!");
     }
   });
+
+//when the rating is not available in the req.body, we send a message
+//isFloat takes in the numeric value that we want to accept
+exports.validateRatings = check(
+  "rating",
+  "Rating must be a number between 0 and 10"
+).isFloat({min: 0, max: 10});
   
 
 //to see if we get any errors

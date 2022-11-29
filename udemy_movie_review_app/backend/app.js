@@ -38,13 +38,22 @@ app.use(morgan('dev'))
 //send to: '/api/user-create'
 app.use('/api/user', userRouter);
 
+
 //Now need to set up the actor
 const actorRouter = require('./routes/actor');
 app.use('/api/actor', actorRouter);
 
+
 //Now need to set up the movies
 const movieRouter = require("./routes/movie");
 app.use('/api/movie', movieRouter);
+
+
+//router for reviews:
+//connecting the routes that we created in routes folder
+const reviewRouter = require("./routes/review");
+app.use('/api/review', reviewRouter);
+
 
 
 //with multiple routes with 404 errors
