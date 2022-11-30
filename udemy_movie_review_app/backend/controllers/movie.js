@@ -332,10 +332,9 @@ exports.removeMovie = async (req, res) => {
 
 };
 
-
 exports.getMovies = async (req, res) => {
   //setting default values
-  const { pageNo = 0, limit = 10} = req.query;
+  const { pageNo = 0, limit = 10 } = req.query;
   const movies = await Movie
     .find({})
     .sort({ createdAt: -1 })
@@ -354,7 +353,7 @@ exports.getMovies = async (req, res) => {
   }))
 
   res.json({ movies: results });
-}
+};
 
 exports.getMovieForUpdate = async (req, res) => {
   const { movieId } = req.params;
@@ -402,7 +401,6 @@ exports.getMovieForUpdate = async (req, res) => {
   });
 };
 
-
 exports.searchMovies = async (req, res) => {
   //same as backend/controllers/actor.js -> searchActor
   const { title } = req.query;
@@ -417,10 +415,10 @@ exports.searchMovies = async (req, res) => {
   //options: i for ignoring capitalizations
   //need to firstly check the query because if we search an empty query, it will get every single actor, don't want that
   if (!title.trim()) {
-      return sendError(res, "Invalid request!");
+    return sendError(res, "Invalid request!");
   }
   
-  const movies = await Movie.find({title: {$regex: title, $options: 'i'}});
+  const movies = await Movie.find({ title: { $regex: title, $options: 'i' } });
   
   res.json({
     results: movies.map(m => {
@@ -430,6 +428,50 @@ exports.searchMovies = async (req, res) => {
         poster: m.poster?.url,
         genres: m.genres,
         status: m.status
-    }
-  })});
-}
+      }
+    })
+  });
+};
+
+exports.getLatestUploads = async (req, res) => {
+  //making limit default to 5
+  const { limit = 5 } = req.query;
+  const results = await Movie.find({ status: "public" }).sort("-createdAt").limit(limit);
+
+  // send back only formated data: the poster, trailer, title and id
+  // using the results.map as we want to map to the results and create a brand new array
+  // so that we can have all these items in an array in an object
+  // 
+  const movies = results.map((m) => {
+    //returning an object
+    //remember that the poster is optional, putting the trailer as not required to be on the safe side
+    return {
+      id: m._id,
+      title: m.title,
+      storyLine: m.storyLine,
+      poster: m.poster?.url,
+      trailer: m.trailer?.url
+    };
+  });
+
+  //sending json data to the frontend
+  res.json({ movies });
+};
+
+exports.getSingleMovie = async (req, res) => {
+  //whenever there is info in the request itself, it is in req.params
+  const { movieId } = req.params;
+
+  if (!isValidObjectId(movieId)) return sendError(res, "Movie id is not valid!");
+
+  // we want many of the ObjectId's and info from what we get from the findById, so we need to populate
+  // https://mongoosejs.com/docs/populate.html
+  // So populate automatically uses the id's in a field an puts in the actual object instead of just the id
+  // ex: for our director, in movie modal we normally just have an id, but populate will take that id 
+  // and then look it up and then put in the director's entire profile into our information
+  const movie = await Movie.findById(movieId).populate("director writers cast.actor");
+
+  // want to format our data
+
+  res.json({ movie });
+};

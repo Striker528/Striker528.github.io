@@ -6,7 +6,9 @@ const {
   getMovies,
   getMovieForUpdate,
   updateMovie,
-  searchMovies
+  searchMovies,
+  getLatestUploads,
+  getSingleMovie
 } = require("../controllers/movie");
 
 const { isAuth, isAdmin } = require("../middlewares/auth");
@@ -89,5 +91,20 @@ router.get(
   isAdmin,
   searchMovies
 );
+
+//For normal users:
+
+//route to get 5 latest uploads
+router.get(
+  "/latest-uploads",
+  getLatestUploads
+);
+
+//the movie view when the user clicks on a movie
+router.get(
+  "/single/:movieId",
+  getSingleMovie
+);
+
 
 module.exports = router;
