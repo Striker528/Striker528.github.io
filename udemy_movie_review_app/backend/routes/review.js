@@ -1,4 +1,4 @@
-const { addReview, updateReview } = require("../controllers/review");
+const { addReview, updateReview, removeReview, getReviewsByMovie } = require("../controllers/review");
 const { isAuth } = require("../middlewares/auth");
 const { validateRatings, validate } = require("../middlewares/validator");
 
@@ -21,6 +21,20 @@ router.patch(
     validateRatings,
     validate,
     updateReview
+);
+
+//deleting a review
+router.delete(
+    "/:reviewId",
+    isAuth,
+    removeReview
+);
+
+//get all reviews for a certain movie
+//click on a link and send all reviews related to that movie to the api
+router.get(
+    "/get-reviews-by-movie/:movieId",
+    getReviewsByMovie
 );
 
 module.exports = router;
