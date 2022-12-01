@@ -46,7 +46,7 @@ exports.uploadImageToCloud = async (file) => {
     return { url, public_id };
   };
   
-  exports.formatActor = (actor) => {
+exports.formatActor = (actor) => {
     const { name, gender, about, _id, avatar } = actor;
     return {
       id: _id,
@@ -56,4 +56,50 @@ exports.uploadImageToCloud = async (file) => {
       //if no profile picture was uploaded, it is all good because of the '?'
       avatar: avatar?.url,
     };
-  };
+};
+
+
+exports.averageRatingPipeline = (movieId) => {
+  return ([
+    //Mongodb will pass the info from one state to the next
+    {
+      //first look up and get all the reviews
+      //using Mongodb $lookup
+      $lookup: {
+        //from: (where are we grabbing the data? from the Review database)
+        from: "Review",
+        //localField: where inside the database are we grabbing from? For our case it is the rating portion of each review
+        localField: "rating",
+        //foreignField:
+        foreignField: "_id",
+        //as: (name we will be calling this operation, avgRat means average Rating)
+        as: "avgRat"
+      },
+    },
+    //info from above (the $lookup) will be passed to the $match below
+    {
+      //want to match the parent movie field
+      //have to find all the review's with the same parentMovie
+      $match: {
+        //use the id from the movie that the user clicked on of course
+        parentMovie: movieId
+      },
+    },
+    {
+      //want to group all of the data
+      //use null as we won't want the rating as a single form
+      //don't want separate values or objects
+      $group: {
+        _id: null,
+        ratingAvg: {
+          //now this will give us the average of all the rating
+          $avg: "$rating"
+        },
+        //counting how many reviews that we have inside
+        reviewCount: {
+          $sum: 1
+        }
+      }
+    }
+  ])
+}

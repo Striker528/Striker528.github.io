@@ -1,6 +1,7 @@
-const { sendError, formatActor } = require("../utils/helper");
+const { sendError, formatActor, averageRatingPipeline } = require("../utils/helper");
 const cloudinary = require("../cloud");
 const Movie = require("../models/movie");
+const Review = require("../models/review");
 const { isValidObjectId } = require("mongoose");
 const movie = require("../models/movie");
 const { url } = require("../cloud");
@@ -471,7 +472,69 @@ exports.getSingleMovie = async (req, res) => {
   // and then look it up and then put in the director's entire profile into our information
   const movie = await Movie.findById(movieId).populate("director writers cast.actor");
 
-  // want to format our data
+  //Using Mongodb aggregation, find the average rating of the movie
+  //in aggregate pass the pipeline
+  //pipeline is the set of operation that we want to perform inside our records
+  //in the pipeline add an array
+  //in the array have to define the mulitple stages or operation that we want to performe
+  //these go inside an object
+  //pipeline for this:
+    // Review => rating => parentMovie => calculate Averages
+  //need the movieId as an object id, which is not in the req.params at the beginning of this function
+  //would need to convert movieId to an objectId
+  const reviews = await Review.aggregate(averageRatingPipeline(movie._id));
 
-  res.json({ movie });
+  console.log(reviews);
+
+  // want to format our data
+  //1st destructure all of the fields that we will use
+  const {
+    _id: id,
+    title,
+    storyLine,
+    cast,
+    writers,
+    director,
+    releseDate,
+    genres,
+    tags,
+    language,
+    poster,
+    trailer,
+    type
+  } = movie;
+
+  //now format
+    // cast has many fields in it as it is an actor object
+  res.json({ movie: {
+    id,
+    title,
+    storyLine,
+    releseDate,
+    genres,
+    tags,
+    language,
+    type,
+    poster: poster?.url,
+    trailer: trailer?.url,
+    cast: cast.map((c) => ({
+      id: c._id,
+      profile: {
+        id: c.actor._id,
+        name: c.actor.name,
+        avatar: c.actor?.avatar?.url
+      },
+      leadActor: c.leadActor,
+      roleAs: c.roleAs
+    })),
+    writers: writers.map((w) => ({
+      id: w._id,
+      name: w.name
+    })),
+    director: {
+      id: director._id,
+      name: director.name
+    },
+  },
+  });
 };
