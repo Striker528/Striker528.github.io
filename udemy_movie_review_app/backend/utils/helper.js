@@ -1,5 +1,6 @@
 const crypto = require('crypto');
 const cloudinary = require("../cloud");
+const Review = require("../models/review");
 
 exports.sendError = (res, error, statusCode = 401) => {
     res.status(statusCode).json({ error });
@@ -57,7 +58,6 @@ exports.formatActor = (actor) => {
       avatar: avatar?.url,
     };
 };
-
 
 exports.averageRatingPipeline = (movieId) => {
   return ([
@@ -145,3 +145,93 @@ exports.relatedMovieAggregation = (tags, movieId) => {
     ]
   );
 };
+
+exports.getAverageRatings = async (movieId) => {
+  //Using Mongodb aggregation, find the average rating of the movie
+  //in aggregate pass the pipeline
+  //pipeline is the set of operation that we want to perform inside our records
+  //in the pipeline add an array
+  //in the array have to define the multiple stages or operation that we want to perform
+  //these go inside an object
+  //pipeline for this:
+  // Review => rating => parentMovie => calculate Averages
+  //need the movieId as an object id, which is not in the req.params at the beginning of this function
+  //would need to convert movieId to an objectId
+  //the return is an array
+  //if using the function in the same file that it is created and it is exported, need to use this
+  const [aggregatedResponse] = await Review.aggregate(this.averageRatingPipeline(movieId));
+
+  //console.log(reviews);
+  //instead of reviews being the returned object from the operation above, make it a new object to simplify
+  const reviews = {};
+
+  if (aggregatedResponse) {
+    const { ratingAvg, reviewCount } = aggregatedResponse;
+    // only want 1 decimal place for the ratings, if want the full number:
+    // reviews.ratingAvg = ratingAvg;
+    reviews.ratingAvg = parseFloat(ratingAvg).toFixed(1);
+    reviews.reviewCount = reviewCount;
+  };
+
+  return reviews;
+};
+
+exports.topRatedMoviesPipeline = (type) => {
+  return (
+    [
+      {
+        //whichever movie has the greatest number of reviews we shall return those
+        $lookup: {
+          from: "Movie",
+          localField: "reviews",
+          foreignField: "_id",
+          as: "topRated"
+        },
+      },
+      {
+        //
+        $match: {
+          //checking if there a review or not
+          reviews: { $exists: true },
+          //if the review for each movie does exists, continue
+          //the movies that we look at must be public
+          status: { $eq: "public" },
+          //only look at the media with the type provided at the top of this function (Film, TV Show, etc.)
+          type: { $eq: type },
+        },
+      },
+      {
+        //creating an object: need $project
+        $project: {
+          //need the title for the movie
+          title: 1,
+          //need the poster.url for the movie
+          poster: "$poster.url",
+          //getting the number of reviews a movie has
+          reviewCount: { $size: "$reviews" },
+        },
+      },
+      {
+        $sort: {
+          //selected all of the movies from greater to lower: -1
+          // 1: lower to greater
+          reviewCount: -1
+        },
+      },
+      {
+        $limit: 5,
+      },
+    ]
+  );
+};
+
+// exports.mapMovies = async (movies) => {
+//   const reviews = await this.getAverageRatings(movies._id);
+
+//   return {
+//     id: m_id,
+//     title: m.title,
+//     poster: m.poster,
+//     reviews: { ...reviews }
+//   };
+// };

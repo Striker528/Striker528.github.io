@@ -1,4 +1,4 @@
-const { sendError, formatActor, averageRatingPipeline } = require("../utils/helper");
+const { sendError, formatActor, averageRatingPipeline, getAverageRatings, topRatedMoviesPipeline } = require("../utils/helper");
 const cloudinary = require("../cloud");
 const Movie = require("../models/movie");
 const Review = require("../models/review");
@@ -472,30 +472,8 @@ exports.getSingleMovie = async (req, res) => {
   // and then look it up and then put in the director's entire profile into our information
   const movie = await Movie.findById(movieId).populate("director writers cast.actor");
 
-  //Using Mongodb aggregation, find the average rating of the movie
-  //in aggregate pass the pipeline
-  //pipeline is the set of operation that we want to perform inside our records
-  //in the pipeline add an array
-  //in the array have to define the multiple stages or operation that we want to perform
-  //these go inside an object
-  //pipeline for this:
-    // Review => rating => parentMovie => calculate Averages
-  //need the movieId as an object id, which is not in the req.params at the beginning of this function
-  //would need to convert movieId to an objectId
-  //the return is an array
-  const [aggregatedResponse] = await Review.aggregate(averageRatingPipeline(movie._id));
-
-  //console.log(reviews);
-  //instead of reviews being the returned object from the operation above, make it a new object to simplify
-  const reviews = {};
-
-  if (aggregatedResponse) {
-    const { ratingAvg, reviewCount } = aggregatedResponse;
-    // only want 1 decimal place for the ratings, if want the full number:
-    // reviews.ratingAvg = ratingAvg;
-    reviews.ratingAvg = parseFloat(ratingAvg).toFixed(1);
-    reviews.reviewCount = reviewCount;
-  };
+  //getting the average ratings
+  const reviews = await getAverageRatings(movie._id);
 
   // want to format our data
   //1st destructure all of the fields that we will use
@@ -565,6 +543,53 @@ exports.getRelatedMovies = async (req, res) => {
   //need the aggregating as in getSingleMovie for the ratings
   const movies = await Movie.aggregate(averageRatingPipeline(movie.tags, movie._id));
 
-  res.json({ movies });
+  //refactoring the function to get other movies and their ratings
+  const mapMovies = async (m) => {
+    const reviews = await getAverageRatings(m._id);
+    return {
+      id: m._id,
+      title: m.title,
+      poster: m.poster,
+      reviews: { ...reviews }
+    }
+  }
 
+  //getting the average rating for the related movies
+  //movies is an array
+  //each related movie will just have the "_id", "title", and "poster"
+  //but just need the "_id" as we have the getSingleMovie method we can use to get the rest of the data
+  //if using an await inside a function, need to always put async at the very top
+  //even for unnamed function such as below
+  //goal is to return an object of movies, so return {}
+  //because of the async function, need to await
+  //and need to use Promise.all: need to await for all Promises to be resolved
+  const relatedMovies = await Promise.all(movies.map(mapMovies));
+
+  res.json({ relatedMovies });
+
+};
+
+exports.getTopRatedMovies = async (req, res) => {
+  //remember in the movie.js in routes that we made the type optional in the query
+  const { type = "Film" } = req.query;
+
+  //using aggregation
+  const movies = await Movie.aggregate(topRatedMoviesPipeline(type));
+
+  const mapMovies = async (m) => {
+    const reviews = await getAverageRatings(m._id)
+
+    return {
+      id: m._id,
+      title: m.title,
+      poster: m.poster,
+      reviews: {...reviews}
+    };
+  };
+
+  //now getting the average rating for each of the top rated movies
+  //just like in getRelatedMovies, need to Promise.all to only return once the function is full completed
+  const topRatedMovies = await Promise.all(movies.map(mapMovies));
+
+  res.json({movies:topRatedMovies});
 };

@@ -9,7 +9,8 @@ const {
   searchMovies,
   getLatestUploads,
   getSingleMovie,
-  getRelatedMovies
+  getRelatedMovies,
+  getTopRatedMovies
 } = require("../controllers/movie");
 
 const { isAuth, isAdmin } = require("../middlewares/auth");
@@ -112,5 +113,13 @@ router.get(
   "/related/:movieId",
   getRelatedMovies
 );
+
+//retrieving most rated movies
+//can input the type of movie that we want to get, but that is optional
+router.get(
+  "/top-rated",
+  getTopRatedMovies
+);
+
 
 module.exports = router;
