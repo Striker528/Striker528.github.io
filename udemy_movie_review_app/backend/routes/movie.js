@@ -8,7 +8,8 @@ const {
   updateMovie,
   searchMovies,
   getLatestUploads,
-  getSingleMovie
+  getSingleMovie,
+  getRelatedMovies
 } = require("../controllers/movie");
 
 const { isAuth, isAdmin } = require("../middlewares/auth");
@@ -106,5 +107,10 @@ router.get(
   getSingleMovie
 );
 
+//retrieving like movies by tags
+router.get(
+  "/related/:movieId",
+  getRelatedMovies
+);
 
 module.exports = router;

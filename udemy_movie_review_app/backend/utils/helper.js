@@ -102,4 +102,46 @@ exports.averageRatingPipeline = (movieId) => {
       }
     }
   ])
-}
+};
+
+exports.relatedMovieAggregation = (tags, movieId) => {
+  return (
+    [
+      {
+        // first have to get the db where we are getting the info
+        $lookup: {
+          //from: (where are we grabbing the data? from the Movie database)
+          from: "Movie",
+          //localField: where inside the database are we grabbing from? For our case it is the tags portion of each movie
+          localField: "tags",
+          //foreignField:
+          foreignField: "_id",
+          //as: (name we will be calling this operation, )
+          as: "relatedMovies"
+        },
+      },
+      {
+        $match: {
+          //first: match of these things in the tags:
+          //then inside($in) in the array, spread the movie.tags
+          tags: { $in: [...tags] },
+          //want to exclude the current movie as of course the current movie has tags related to the current movie
+          _id: { $ne: movieId }
+        },
+      },
+      {
+        //like map function in javascript
+        $project: {
+          //retrieve the title
+          title: 1,
+          //then get the poster's url of the like movie with similar tags
+          poster: "$poster.url"
+        }
+      },
+      {
+        //only grab 5 similar movies
+        $limit: 5
+      }
+    ]
+  );
+};

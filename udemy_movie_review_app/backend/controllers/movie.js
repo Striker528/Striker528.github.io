@@ -476,15 +476,26 @@ exports.getSingleMovie = async (req, res) => {
   //in aggregate pass the pipeline
   //pipeline is the set of operation that we want to perform inside our records
   //in the pipeline add an array
-  //in the array have to define the mulitple stages or operation that we want to performe
+  //in the array have to define the multiple stages or operation that we want to perform
   //these go inside an object
   //pipeline for this:
     // Review => rating => parentMovie => calculate Averages
   //need the movieId as an object id, which is not in the req.params at the beginning of this function
   //would need to convert movieId to an objectId
-  const reviews = await Review.aggregate(averageRatingPipeline(movie._id));
+  //the return is an array
+  const [aggregatedResponse] = await Review.aggregate(averageRatingPipeline(movie._id));
 
-  console.log(reviews);
+  //console.log(reviews);
+  //instead of reviews being the returned object from the operation above, make it a new object to simplify
+  const reviews = {};
+
+  if (aggregatedResponse) {
+    const { ratingAvg, reviewCount } = aggregatedResponse;
+    // only want 1 decimal place for the ratings, if want the full number:
+    // reviews.ratingAvg = ratingAvg;
+    reviews.ratingAvg = parseFloat(ratingAvg).toFixed(1);
+    reviews.reviewCount = reviewCount;
+  };
 
   // want to format our data
   //1st destructure all of the fields that we will use
@@ -535,6 +546,25 @@ exports.getSingleMovie = async (req, res) => {
       id: director._id,
       name: director.name
     },
+    reviews: { ...reviews }
   },
   });
+};
+
+exports.getRelatedMovies = async (req, res) => {
+  //first destructure related movieId
+  //remember that the id is directly in the request (in the top http)
+  const { movieId } = req.params;
+
+  if (!isValidObjectId(movieId)) return sendError(res, "Invalid movie id");
+
+  //need the movie to get the tags of the movie
+  const movie = await Movie.findById(movieId);
+
+  //now getting the movies with similar tags
+  //need the aggregating as in getSingleMovie for the ratings
+  const movies = await Movie.aggregate(averageRatingPipeline(movie.tags, movie._id));
+
+  res.json({ movies });
+
 };
