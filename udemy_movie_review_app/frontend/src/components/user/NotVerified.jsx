@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks";
-import Container from "../Container";
+//import Container from "../Container";
 
 export default function NotVerified() {
   const { authInfo } = useAuth();
@@ -14,8 +14,9 @@ export default function NotVerified() {
     navigate("/auth/verification", { state: { user: authInfo.profile } });
   };
 
+  //using container in TopRatedMovies, which has this not verified, so we must remove it from here
   return (
-    <Container>
+    <div>
       {isLoggedIn && !isVerified ? (
         <p className="text-lg text-center bg-blue-50 p-2">
           It looks like you haven't verified your account,{" "}
@@ -27,6 +28,6 @@ export default function NotVerified() {
           </button>
         </p>
       ) : null}
-    </Container>
+    </div>
   );
 }

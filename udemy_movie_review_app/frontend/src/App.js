@@ -33,6 +33,8 @@ export default function App() {
 
         //if the app finds any of the top routes, it will render the components
         //if use any invalid routes: go to NotFound
+
+        //the path "/" is the what the normal users see (The Home component)
         <>
             <Navbar />
             <Routes>
