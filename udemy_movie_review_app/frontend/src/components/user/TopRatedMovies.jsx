@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { getTopRatedMovies } from "../../api/movie";
 import { useNotification } from "../../hooks";
-import GridContainer from "../GridContainer";
+import MovieList from "./MovieList";
 
 export default function TopRatedMovies() {
   const { updateNotification } = useNotification();
@@ -28,11 +28,5 @@ export default function TopRatedMovies() {
   //     return <div className="p-5 bg-red-200" ky={index}></div>;
   //   })
 
-  return (
-    <GridContainer>
-      {movies.map((_, index) => {
-        return <div className="p-5 bg-red-200" ky={index}></div>;
-      })}
-    </GridContainer>
-  );
+  return <MovieList movies={movies} title="Viewer's Choice (Movies)" />;
 }

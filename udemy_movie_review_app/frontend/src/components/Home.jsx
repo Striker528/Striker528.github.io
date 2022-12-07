@@ -2,6 +2,8 @@ import React from "react";
 import Container from "./Container";
 import NotVerified from "./user/NotVerified";
 import TopRatedMovies from "./user/TopRatedMovies";
+import TopRatedTVSeries from "./user/TopRatedTVSeries";
+import TopRatedWebSeries from "./user/TopRatedWebSeries";
 
 export default function Home() {
   return (
@@ -10,7 +12,9 @@ export default function Home() {
         <NotVerified />
         {/* Slider */}
         {/* Most rated movies */}
-        <TopRatedMovies/>
+        <TopRatedMovies />
+        <TopRatedWebSeries />
+        <TopRatedTVSeries />
       </Container>
     </div>
   );
