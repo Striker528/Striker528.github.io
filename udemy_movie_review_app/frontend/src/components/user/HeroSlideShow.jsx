@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 import { AiOutlineDoubleLeft, AiOutlineDoubleRight } from "react-icons/ai";
@@ -9,8 +9,11 @@ let count = 0;
 
 export default function HeroSlideShow() {
   const [slide, setSlide] = useState({});
+  const [clonedSlide, setClonedSlide] = useState({});
   const [slides, setSlides] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const slideRef = useRef();
+  const clonedSlideRef = useRef();
 
   const { updateNotification } = useNotification();
 
@@ -23,6 +26,9 @@ export default function HeroSlideShow() {
 
   //We get back the 5 latest movies, an in the array ordered: 0, 1, 2, 3, 4
   const handleOnNextClick = () => {
+    //in order to have the current slide transition to the left like the next slide, have to clone it
+    setClonedSlide(slides[count]);
+
     //want to go to the next movies
     //have all the movies in the slides State
 
@@ -30,12 +36,26 @@ export default function HeroSlideShow() {
     count = (count + 1) % slides.length;
     setSlide(slides[count]);
     setCurrentIndex(count);
+
+    //adding in the animation to slide in from right from index.css file at the top of frontend (in src)
+    //this has to be removed before the user clicks on the right button again or it won't play
+    //it won't play as the image will already have the class and it only activates once we add the class to the image
+    //removing in handleAnimationEnd
+    clonedSlideRef.current.classList.add("slide-out-to-left");
+    slideRef.current.classList.add("slide-in-from-right");
   };
 
   const handleOnPrevClick = () => {
     count = Math.abs(count - 1) % slides.length;
     setSlide(slides[count]);
     setCurrentIndex(count);
+  };
+
+  const handleAnimationEnd = () => {
+    slideRef.current.classList.remove("slide-in-from-right");
+    clonedSlideRef.current.classList.remove("slide-out-to-left");
+    //now have to clear the cloned slide so that the next poster will be cloned
+    setClonedSlide({});
   };
 
   useEffect(() => {
@@ -46,9 +66,26 @@ export default function HeroSlideShow() {
     <div className="w-full flex">
       {/*Slide Show section */}
       {/*If using absolute below a div, have to make the top div relative */}
-      <div className="w-4/5 aspect-video relative">
+      <div className="w-4/5 aspect-video relative overflow-hidden">
         {/*Issue where the next movie poster would change slides, these classNames below fixes that */}
-        <img className="aspect-video object-cover" src={slide.poster} alt="" />
+        {/*We want to slide the next image to the left and the previous one to the right, so we are going to put
+        the next poster 80% over to the right (translate-x-[80%]) and cover some of it (overflow-hidden above) */}
+        {/*To remove an animation once it has ended: onAnimationEnd={() => console.log("Hello")}*/}
+        <img
+          onAnimationEnd={handleAnimationEnd}
+          ref={slideRef}
+          className="aspect-video object-cover"
+          src={slide.poster}
+          alt=""
+        />
+        {/*The cloned image that will transition to the left out of view*/}
+        <img
+          onAnimationEnd={handleAnimationEnd}
+          ref={clonedSlideRef}
+          className="aspect-video object-cover absolute inset-0"
+          src={clonedSlide.poster}
+          alt=""
+        />
         <SlideShowController
           onPrevClick={handleOnPrevClick}
           onNextClick={handleOnNextClick}
