@@ -81,6 +81,35 @@
   }
 }
 
+/*For going to the previous slide*/
+.slide-in-from-left{
+  animation: slideInFromLeft 0.5s ease-in;
+}
+
+.slide-out-to-right{
+  animation: slideOutToRight 0.5s ease-in;
+}
+
+@keyframes slideInFromLeft{
+  from{
+    transform: translateX(-100%)
+  }
+  to{
+    transform: translateX(0%)
+  }
+}
+
+@keyframes slideOutToRight{
+  from{
+    transform: translateX(0%)
+  }
+  to{
+    transform: translateX(100%)
+  }
+}
+
+
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

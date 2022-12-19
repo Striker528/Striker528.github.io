@@ -17,9 +17,11 @@ export default function Home() {
         {/* Slider */}
         <HeroSlideShow />
         {/* Most rated movies */}
-        <TopRatedMovies />
-        <TopRatedWebSeries />
-        <TopRatedTVSeries />
+        <div className="space-y-3 py-8">
+          <TopRatedMovies />
+          <TopRatedWebSeries />
+          <TopRatedTVSeries />
+        </div>
       </Container>
     </div>
   );

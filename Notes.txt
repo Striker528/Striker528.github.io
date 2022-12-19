@@ -1,3 +1,11 @@
+For Bash Scripts see C/Users/austy/.bash_profile
+*************************************************
+	Alias: udemy_terminals
+*************************************************
+- this command (udemy_terminals) (ignore the ()) opens 3 new terminals to the github to push everything and then to the backend and frontend folders and enters "npm start" to 
+	start the website
+
+
 Look at CS97 web app
 
 V1: Not work
