@@ -118,21 +118,21 @@ export const searchMovieForAdmin = async (title) => {
 };
 
 //in the backend, we get the topRatedMovies by type which is optional
-export const getTopRatedMovies = async (type) => {
+export const getTopRatedMovies = async (type, signal) => {
   try {
     let endpoint = "/movie/top-rated";
     if (type) endpoint = endpoint + "?type=" + type;
     //remember that don't need .get for getting function, just client(...) works
-    const { data } = await client(endpoint);
+    const { data } = await client(endpoint, { signal });
     return data;
   } catch (error) {
     return catchError(error);
   }
 };
 
-export const getLatestUploads = async () => {
+export const getLatestUploads = async (signal) => {
   try {
-    const { data } = await client("movie/latest-uploads");
+    const { data } = await client("movie/latest-uploads", { signal });
     return data;
   } catch (error) {
     return catchError(error);

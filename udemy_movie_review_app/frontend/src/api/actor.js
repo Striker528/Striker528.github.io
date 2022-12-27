@@ -4,7 +4,7 @@ import client from "./client";
 export const createActor = async (formData) => {
   //endpoint to send the data
   //backend => /api/actor/create
-    const token = getToken();
+  const token = getToken();
   try {
     const { data } = await client.post("/actor/create", formData, {
       headers: {
@@ -14,14 +14,14 @@ export const createActor = async (formData) => {
     });
     return data;
   } catch (error) {
-      return catchError(error);
+    return catchError(error);
   }
 };
 
 export const updateActor = async (id, formData) => {
-    const token = getToken();
+  const token = getToken();
   try {
-    const { data } = await client.post("/actor/update/"+id, formData, {
+    const { data } = await client.post("/actor/update/" + id, formData, {
       headers: {
         authorization: "Bearer " + token,
         "content-type": "multipart/form-data",
@@ -29,33 +29,32 @@ export const updateActor = async (id, formData) => {
     });
     return data;
   } catch (error) {
-      return catchError(error);
+    return catchError(error);
   }
 };
 
 export const deleteActor = async (id) => {
   const token = getToken();
-try {
-  const { data } = await client.delete("/actor/"+id, {
-    headers: {
-      authorization: "Bearer " + token,
-    },
-  });
-  return data;
-} catch (error) {
+  try {
+    const { data } = await client.delete("/actor/" + id, {
+      headers: {
+        authorization: "Bearer " + token,
+      },
+    });
+    return data;
+  } catch (error) {
     return catchError(error);
-}
+  }
 };
-
 
 export const searchActor = async (query) => {
   //endpoint to send the data
   //backend => /api/actor/create
-    const token = getToken();
+  const token = getToken();
   try {
     //don't need client.get("/actor/search", ...) can just do:
-      //don't send the formData, send the query: "/actor/search?query"
-      //query is the name
+    //don't send the formData, send the query: "/actor/search?query"
+    //query is the name
     const { data } = await client(`/actor/search?name=${query}`, {
       headers: {
         authorization: "Bearer " + token,
@@ -63,26 +62,38 @@ export const searchActor = async (query) => {
     });
     return data;
   } catch (error) {
-      return catchError(error);
+    return catchError(error);
   }
 };
 
 export const getActors = async (pageNo, limit) => {
   //endpoint to send the data
   //backend => /api/actor/create
-    const token = getToken();
+  const token = getToken();
   try {
     //don't need client.get("/actor/search", ...) can just do:
-      //don't send the formData, send the query: "/actor/search?query"
-      //query is the name
-    const { data } = await client(`/actor/actors?pageNo=${pageNo}&limit=${limit}`, {
-      headers: {
-        authorization: "Bearer " + token,
-        "content-type": "multipart/form-data",
-      },
-    });
+    //don't send the formData, send the query: "/actor/search?query"
+    //query is the name
+    const { data } = await client(
+      `/actor/actors?pageNo=${pageNo}&limit=${limit}`,
+      {
+        headers: {
+          authorization: "Bearer " + token,
+          "content-type": "multipart/form-data",
+        },
+      }
+    );
     return data;
   } catch (error) {
-      return catchError(error);
+    return catchError(error);
+  }
+};
+
+export const getActorProfile = async (id) => {
+  try {
+    const { data } = await client(`/actor/single/${id}`);
+    return data;
+  } catch (error) {
+    return catchError(error);
   }
 };

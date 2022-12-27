@@ -6,7 +6,7 @@ export const isValidEmail = (email) => {
 
 export const getToken = () => {
   return localStorage.getItem("auth-token");
-}
+};
 
 export const catchError = (error) => {
   //console.log(error.response.data);
@@ -18,7 +18,9 @@ export const catchError = (error) => {
 
 export const renderItem = (result) => {
   return (
-    <div key={result.id} className="
+    <div
+      key={result.id}
+      className="
       flex
       space-x-2
       rounded
@@ -32,4 +34,17 @@ export const renderItem = (result) => {
       <p className="dark:text-white font-semibold">{result.name}</p>
     </div>
   );
+};
+
+export const getPoster = (posters = []) => {
+  //same as posters.length
+  const { length } = posters;
+
+  if (!length) return null;
+
+  //if poster has more then 2 items then select the 2nd poster
+  if (length > 2) return posters[1];
+
+  //other wise, select the first poster
+  return posters[0];
 };

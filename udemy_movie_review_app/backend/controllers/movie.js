@@ -4,6 +4,7 @@ const {
   averageRatingPipeline,
   getAverageRatings,
   topRatedMoviesPipeline,
+  relatedMovieAggregation,
 } = require("../utils/helper");
 const cloudinary = require("../cloud");
 const Movie = require("../models/movie");
@@ -106,8 +107,10 @@ exports.createMovie = async (req, res) => {
   await newMovie.save();
 
   res.status(201).json({
-    id: newMovie._id,
-    title,
+    movie: {
+      id: newMovie._id,
+      title,
+    },
   });
 };
 
@@ -354,6 +357,7 @@ exports.getMovies = async (req, res) => {
     id: movie._id,
     title: movie.title,
     poster: movie.poster?.url,
+    responsivePosters: movie.poster?.responsive,
     genres: movie.genres,
     status: movie.status,
   }));
@@ -446,7 +450,7 @@ exports.getLatestUploads = async (req, res) => {
   const { limit = 5 } = req.query;
   const results = await Movie.find({ status: "public" })
     .sort("-createdAt")
-    .limit(limit);
+    .limit(parseInt(limit));
 
   // send back only formated data: the poster, trailer, title and id
   // using the results.map as we want to map to the results and create a brand new array
@@ -460,6 +464,7 @@ exports.getLatestUploads = async (req, res) => {
       title: m.title,
       storyLine: m.storyLine,
       poster: m.poster?.url,
+      responsivePosters: m.poster.responsive,
       trailer: m.trailer?.url,
     };
   });
@@ -555,7 +560,7 @@ exports.getRelatedMovies = async (req, res) => {
   //now getting the movies with similar tags
   //need the aggregating as in getSingleMovie for the ratings
   const movies = await Movie.aggregate(
-    averageRatingPipeline(movie.tags, movie._id)
+    relatedMovieAggregation(movie.tags, movie._id)
   );
 
   //refactoring the function to get other movies and their ratings
@@ -565,6 +570,7 @@ exports.getRelatedMovies = async (req, res) => {
       id: m._id,
       title: m.title,
       poster: m.poster,
+      responsivePosters: m.responsivePosters,
       reviews: { ...reviews },
     };
   };
@@ -597,6 +603,7 @@ exports.getTopRatedMovies = async (req, res) => {
       id: m._id,
       title: m.title,
       poster: m.poster,
+      responsivePoster: m.responsivePosters,
       reviews: { ...reviews },
     };
   };

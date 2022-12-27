@@ -6,13 +6,13 @@ import { useNotification } from "../../hooks";
 import ModalContainer from "../modals/ModalContainer";
 import MovieForm from "./MovieForm";
 
-export default function MovieUpload({visible, onClose}) {
+export default function MovieUpload({ visible, onClose }) {
   const [videoSelected, setVideoSelected] = useState(false);
   const [videoUploaded, setVideoUploaded] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [videoInfo, setVideoInfo] = useState({});
   const [busy, setBusy] = useState(false);
-  
+
   /*
   An example, can't use this
   const [movieInfo, setMovieInfo] = useState({
@@ -35,6 +35,13 @@ export default function MovieUpload({visible, onClose}) {
   });
   */
   const { updateNotification } = useNotification();
+
+  const resetState = () => {
+    setVideoSelected(false);
+    setVideoUploaded(false);
+    setUploadProgress(0);
+    setVideoInfo({});
+  };
 
   const handleTypeError = (error) => {
     updateNotification("error", error);
@@ -89,12 +96,19 @@ export default function MovieUpload({visible, onClose}) {
 
     data.append("trailer", JSON.stringify(videoInfo));
     //console.log(data);
-    const res = await uploadMovie(data);
+    const { error, movie } = await uploadMovie(data);
     setBusy(false);
-    console.log(res);
+
+    if (error) return updateNotification("error", error);
+
+    updateNotification("success", "Movie uploaded Successfully");
+
+    resetState();
+
+    //console.log(res);
 
     onClose();
-  }
+  };
 
   //adding in the custom scroll bar (custom-scroll-bar)
 
@@ -104,32 +118,37 @@ export default function MovieUpload({visible, onClose}) {
   return (
     <ModalContainer visible={visible}>
       <div className="mb-5">
-      <UploadProgress
-            visible={!videoUploaded && videoSelected}
-            message={getUploadProgressValue()}
-            width={uploadProgress}
+        <UploadProgress
+          visible={!videoUploaded && videoSelected}
+          message={getUploadProgressValue()}
+          width={uploadProgress}
         />
       </div>
       {!videoSelected ? (
-          <TrailerSelector
-            visible={!videoSelected}
-            onTypeError={handleTypeError}
-            handleChange={handleChange}
-          /> 
-      )  : (
-          <MovieForm btnTitle="Upload" busy={busy}  onSubmit={!busy ? handleSubmit : null} />
+        <TrailerSelector
+          visible={!videoSelected}
+          onTypeError={handleTypeError}
+          handleChange={handleChange}
+        />
+      ) : (
+        <MovieForm
+          btnTitle="Upload"
+          busy={busy}
+          onSubmit={!busy ? handleSubmit : null}
+        />
       )}
-      </ModalContainer>
+    </ModalContainer>
   );
 }
 
 const TrailerSelector = ({ visible, handleChange, onTypeError }) => {
   if (!visible) return null;
 
-  //for fileuploader, can submit the children that you want to show, between the 
+  //for fileuploader, can submit the children that you want to show, between the
   //<FileUploader> (children here) </FileUploader>
   return (
-    <div className="
+    <div
+      className="
       h-full
       flex
       items-center
@@ -140,7 +159,8 @@ const TrailerSelector = ({ visible, handleChange, onTypeError }) => {
         onTypeError={onTypeError}
         types={["mp4", "avi"]}
       >
-        <div className="
+        <label
+          className="
           w-48
           h-48
           border
@@ -158,7 +178,7 @@ const TrailerSelector = ({ visible, handleChange, onTypeError }) => {
         >
           <AiOutlineCloudUpload size={80} />
           <p>Drop your file here!</p>
-        </div>
+        </label>
       </FileUploader>
     </div>
   );
@@ -168,13 +188,15 @@ const UploadProgress = ({ width, message, visible }) => {
   if (!visible) return null;
 
   return (
-    <div className="
+    <div
+      className="
       dark:bg-secondary
       bg-white drop-shadow-lg
       rounded
       p-3"
     >
-      <div className="
+      <div
+        className="
         relative h-3
         dark:bg-dark-subtle
         bg-light-subtle
@@ -189,7 +211,8 @@ const UploadProgress = ({ width, message, visible }) => {
             bg-secondary"
         />
       </div>
-      <p className="
+      <p
+        className="
         font-semibold
         dark:text-dark-subtle
         text-light-subtle
