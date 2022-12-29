@@ -4,34 +4,36 @@ const { isValidObjectId } = require("mongoose");
 const genres = require("../utils/genres");
 
 exports.userValidator = [
-  check('name').trim().not().isEmpty().withMessage('Name is Missing'),
+  check("name").trim().not().isEmpty().withMessage("Name is Missing"),
   //don't normalizeEmail as it removes the periods before the @ if there is any, like in my email
-    //check('email').normalizeEmail().isEmail().withMessage('Email is Invalid'),
-    check('email').isEmail().withMessage('Email is Invalid'),
-    check('password')
-        .trim().not().isEmpty().withMessage('Password is Missing')
-        .isLength({ min: 8, max: 20 }).withMessage("Password must be 8-20 characters long"),
+  //check('email').normalizeEmail().isEmail().withMessage('Email is Invalid'),
+  check("email").isEmail().withMessage("Email is Invalid"),
+  check("password")
+    .trim()
+    .not()
+    .isEmpty()
+    .withMessage("Password is Missing")
+    .isLength({ min: 8, max: 20 })
+    .withMessage("Password must be 8-20 characters long"),
 ];
 
 exports.validatePassword = [
-    check("newPassword")
-      .trim()
-      .not()
-      .isEmpty()
-      .withMessage("Password is missing!")
-      .isLength({ min: 8, max: 20 })
-      .withMessage("Password must be 8 to 20 characters long!"),
+  check("newPassword")
+    .trim()
+    .not()
+    .isEmpty()
+    .withMessage("Password is missing!")
+    .isLength({ min: 8, max: 20 })
+    .withMessage("Password must be 8 to 20 characters long!"),
 ];
-  
+
 exports.signInValidator = [
   //check('email').normalizeEmail().isEmail().withMessage('Email is Invalid'),
-  check('email').isEmail().withMessage('Email is Invalid'),
-  check('password')
-      .trim().not().isEmpty().withMessage('Password is Missing'),
+  check("email").isEmail().withMessage("Email is Invalid"),
+  check("password").trim().not().isEmpty().withMessage("Password is Missing"),
 ];
-  
-exports.actorInfoValidator = [
 
+exports.actorInfoValidator = [
   check("name").trim().not().isEmpty().withMessage("Actor name is missing!"),
   check("about")
     .trim()
@@ -44,9 +46,8 @@ exports.actorInfoValidator = [
     .isEmpty()
     .withMessage("Gender is a required field!"),
 ];
-  
-exports.validateMovie = [
 
+exports.validateMovie = [
   check("title").trim().not().isEmpty().withMessage("Movie title is missing!"),
   check("storyLine")
     .trim()
@@ -145,8 +146,7 @@ exports.validateTrailer = check("trailer")
       //console.log("public_id that I need is:")
       //console.log(public_id)
 
-      if (public_id !== publicId)
-        throw Error("Trailer public_id is invalid!");
+      if (public_id !== publicId) throw Error("Trailer public_id is invalid!");
 
       return true;
     } catch (error) {
@@ -159,17 +159,15 @@ exports.validateTrailer = check("trailer")
 exports.validateRatings = check(
   "rating",
   "Rating must be a number between 0 and 10"
-).isFloat({min: 0, max: 10});
-  
+).isFloat({ min: 0, max: 10 });
 
 //to see if we get any errors
 exports.validate = (req, res, next) => {
-
-  const error = validationResult(req).array()
+  const error = validationResult(req).array();
   //console.log(error)
   //console.log("In validate function")
   if (error.length) {
-    return res.json({error: error[0].msg})
+    return res.json({ error: error[0].msg });
   }
   //console.log("Passed validate in validate function")
 

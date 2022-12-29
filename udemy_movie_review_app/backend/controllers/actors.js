@@ -44,7 +44,7 @@ exports.createActor = async (req, res) => {
 exports.updateActor = async (req, res) => {
   const { name, about, gender } = req.body;
   const { file } = req;
-  //id in the url, so destructre it this way
+  //id in the url, so destructure it this way
   const { actor_id } = req.params;
 
   if (!isValidObjectId(actor_id))

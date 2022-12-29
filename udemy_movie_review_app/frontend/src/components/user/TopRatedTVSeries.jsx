@@ -10,7 +10,12 @@ export default function TopRatedTVSeries() {
 
   const fetchMovies = async (signal) => {
     const { error, movies } = await getTopRatedMovies("TV Series", signal);
-    if (error) return updateNotification("error", error);
+    //if (error) return updateNotification("error", error);
+    if (error)
+      return updateNotification(
+        "error",
+        error + " Trouble getting top rated TV series"
+      );
 
     setMovies([...movies]);
   };

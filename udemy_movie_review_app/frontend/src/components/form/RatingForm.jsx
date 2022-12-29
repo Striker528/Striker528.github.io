@@ -1,18 +1,25 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import Submit from "./Submit";
 
-const ratings = new Array(10).fill("");
+const createArray = (count) => {
+  return new Array(count).fill("");
+};
 
-export default function RatingForm({ busy, onSubmit }) {
+//const ratings = new Array(10).fill("");
+const ratings = createArray(10);
+
+export default function RatingForm({ busy, initialState, onSubmit }) {
   const [selectedRatings, setSelectedRatings] = useState([]);
   const [content, setContent] = useState("");
 
   const handleMouseEnter = (index) => {
     //console.log(index);
     //setting ratings to be the amount of stars the user hovered over
-    const ratings = new Array(index + 1).fill(index);
+    //const ratings = new Array(index + 1).fill(index);
+    const ratings = createArray(index + 1);
+
     //console.log(ratings);
     //now filling in our array selectedRatings with the amount of stars the user hovered over
     setSelectedRatings([...ratings]);
@@ -31,6 +38,14 @@ export default function RatingForm({ busy, onSubmit }) {
 
     onSubmit(data);
   };
+
+  useEffect(() => {
+    if (initialState) {
+      setContent(initialState.content);
+      //setSelectedRatings(initialState.rating);
+      setSelectedRatings(createArray(initialState.rating));
+    }
+  }, [initialState]);
 
   return (
     <div>

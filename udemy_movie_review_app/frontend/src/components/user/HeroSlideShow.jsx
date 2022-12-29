@@ -25,6 +25,7 @@ export default function HeroSlideShow() {
   const fetchLatestUploads = async (signal) => {
     const { error, movies } = await getLatestUploads(signal);
     if (error) return updateNotification("error", error);
+    //console.log(movies);
     setSlides([...movies]);
     setCurrentSlide(movies[0]);
   };

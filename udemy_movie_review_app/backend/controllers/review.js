@@ -68,6 +68,10 @@ exports.updateReview = async (req, res) => {
   const { reviewId } = req.params;
   //rest of the fields are in the body
   const { content, rating } = req.body;
+  // console.log("Content is:");
+  // console.log(content);
+  // console.log("rating is:");
+  // console.log(rating);
   //need the owner, so we need the userId, which is in the isAuth method
   const userId = req.user._id;
 
@@ -91,7 +95,11 @@ exports.updateReview = async (req, res) => {
   //save the updated review as in the addReview function
   await review.save();
 
-  res.json({ message: "Your review has been updated." });
+  //res.json({ message: "Your review has been updated." });
+  res.json({
+    message: "Movie is updated",
+    review: review,
+  });
 };
 
 exports.removeReview = async (req, res) => {
@@ -155,6 +163,7 @@ exports.getReviewsByMovie = async (req, res) => {
   //     "__v": 0
   // }
   //*** remember that the MongoDB function are async so make sure to use await */
+  //Also Want the title of the Movie the review belongs to
   const movie = await Movie.findById(movieId)
     .populate({
       path: "reviews",
@@ -163,7 +172,7 @@ exports.getReviewsByMovie = async (req, res) => {
         select: "name",
       },
     })
-    .select("reviews");
+    .select("reviews title");
 
   //want to format the data that we get in movie
   // {
@@ -194,5 +203,5 @@ exports.getReviewsByMovie = async (req, res) => {
   });
 
   //when sending an object make sure to put it between {}
-  res.json({ reviews });
+  res.json({ movie: { title: movie.title, reviews } });
 };
