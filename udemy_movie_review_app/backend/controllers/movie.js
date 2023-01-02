@@ -614,3 +614,36 @@ exports.getTopRatedMovies = async (req, res) => {
 
   res.json({ movies: topRatedMovies });
 };
+
+exports.searchPublicMovies = async (req, res) => {
+  const { title } = req.query;
+
+  if (!title.trim()) {
+    return sendError(res, "Invalid request!");
+  }
+
+  const movies = await Movie.find({
+    title: { $regex: title, $options: "i" },
+    status: "public",
+  });
+
+  const mapMovies = async (m) => {
+    const reviews = await getAverageRatings(m._id);
+
+    return {
+      id: m._id,
+      title: m.title,
+      poster: m.poster?.url,
+      responsivePoster: m.poster?.responsive,
+      reviews: { ...reviews },
+    };
+  };
+
+  //now getting the average rating for each of the top rated movies
+  //just like in getRelatedMovies, need to Promise.all to only return once the function is full completed
+  const results = await Promise.all(movies.map(mapMovies));
+
+  res.json({
+    results,
+  });
+};

@@ -10,6 +10,9 @@ import { useNotification } from "../../hooks";
 let count = 0;
 let intervalId = 0;
 
+let newTime = 0;
+let lastTime = 0;
+
 export default function HeroSlideShow() {
   const [currentSlide, setCurrentSlide] = useState({});
   const [clonedSlide, setClonedSlide] = useState({});
@@ -55,11 +58,21 @@ export default function HeroSlideShow() {
   const startSlideShow = () => {
     //call the function handleOnNextClick after 3500 milliseconds (3.5 seconds)
     //setInterval will give back an id
-    intervalId = setInterval(handleOnNextClick, 3500);
+    //intervalId = setInterval(handleOnNextClick, 3500);
+    //issue where the time between slides is not consistent, usually exceeds 4 seconds (4000)
+    intervalId = setInterval(() => {
+      newTime = Date.now();
+      const delta = newTime - lastTime;
+      //console.log(delta);
+      //when the delta is under 4 seconds, reset the interval
+      if (delta < 4000) return clearInterval(intervalId);
+      handleOnNextClick();
+    }, 3500);
   };
 
   //We get back the 5 latest movies, an in the array ordered: 0, 1, 2, 3, 4
   const handleOnNextClick = () => {
+    lastTime = Date.now();
     //slideshow not pausing when hitting next
     pauseSlideShow();
 
@@ -118,6 +131,8 @@ export default function HeroSlideShow() {
     startSlideShow();
   };
 
+  // 4000
+
   const handleOnVisibilityChange = () => {
     //console.log(document.visibilityState);
     const visibility = document.visibilityState;
@@ -156,7 +171,7 @@ export default function HeroSlideShow() {
     <div className="w-full flex">
       {/*Slide Show section */}
       {/*If using absolute below a div, have to make the top div relative */}
-      <div className="w-4/5 aspect-video relative overflow-hidden">
+      <div className="md:w-4/5 w-full aspect-video relative overflow-hidden">
         {/*Current Slide */}
         <Slide
           ref={slideRef}
@@ -180,8 +195,9 @@ export default function HeroSlideShow() {
         />
       </div>
 
-      {/*Up next section */}
-      <div className="w-1/5 space-y-3 px-3">
+      {/*Up next section 
+      - when looking at mobile view, don't want to see the up next section code is (md:block hidden)*/}
+      <div className="w-1/5 md:block hidden space-y-3 px-3">
         <h1 className="font-semibold text-2xl text-primary dark:text-white">
           Up Next
         </h1>

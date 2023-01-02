@@ -10,13 +10,18 @@ const {
   getLatestUploads,
   getSingleMovie,
   getRelatedMovies,
-  getTopRatedMovies
+  getTopRatedMovies,
+  searchPublicMovies,
 } = require("../controllers/movie");
 
 const { isAuth, isAdmin } = require("../middlewares/auth");
 const { parseData } = require("../middlewares/helper");
 const { uploadVideo, uploadImage } = require("../middlewares/multer");
-const { validateMovie, validate, validateTrailer } = require("../middlewares/validator");
+const {
+  validateMovie,
+  validate,
+  validateTrailer,
+} = require("../middlewares/validator");
 const router = express.Router();
 
 router.post(
@@ -65,61 +70,32 @@ router.patch(
   updateMovie
 );
 
-router.delete(
-  "/:movieId",
-  isAuth,
-  isAdmin,
-  removeMovie
-);
+router.delete("/:movieId", isAuth, isAdmin, removeMovie);
 
-router.get(
-  '/movies',
-  isAuth,
-  isAdmin,
-  getMovies
-);
+router.get("/movies", isAuth, isAdmin, getMovies);
 
-router.get(
-  '/for-update/:movieId',
-  isAuth,
-  isAdmin,
-  getMovieForUpdate
-);
+router.get("/for-update/:movieId", isAuth, isAdmin, getMovieForUpdate);
 
 //there will be some private movies, and those movies are for admin only
-router.get(
-  "/search",
-  isAuth,
-  isAdmin,
-  searchMovies
-);
+router.get("/search", isAuth, isAdmin, searchMovies);
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //For normal users:
 
 //route to get 5 latest uploads
-router.get(
-  "/latest-uploads",
-  getLatestUploads
-);
+router.get("/latest-uploads", getLatestUploads);
 
 //the movie view when the user clicks on a movie
-router.get(
-  "/single/:movieId",
-  getSingleMovie
-);
+router.get("/single/:movieId", getSingleMovie);
 
 //retrieving like movies by tags
-router.get(
-  "/related/:movieId",
-  getRelatedMovies
-);
+router.get("/related/:movieId", getRelatedMovies);
 
 //retrieving most rated movies
 //can input the type of movie that we want to get, but that is optional
-router.get(
-  "/top-rated",
-  getTopRatedMovies
-);
+router.get("/top-rated", getTopRatedMovies);
 
+//there will be some private movies, and those movies are for admin only
+router.get("/search-public", searchPublicMovies);
 
 module.exports = router;
