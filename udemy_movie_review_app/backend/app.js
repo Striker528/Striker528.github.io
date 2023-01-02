@@ -1,24 +1,24 @@
-const express = require('express');
+const express = require("express");
 
 //for error handling
 //with this, don't need to wrap anything instead try,catch blocks
-require('express-async-errors');
+require("express-async-errors");
 
-const morgan = require('morgan');
+const morgan = require("morgan");
 
 const { errorHandler } = require("./middlewares/error");
 
 //to allow the frontend and backend to talk from different servers: need cors
-const cors = require('cors');
+const cors = require("cors");
 
 //to keep the important links: mongodb and jwt secure
-require('dotenv').config();
+require("dotenv").config();
 
 //need to link the db/index.js
 //if don't provide the /index.js, index.js because the default file the program will look for
-require('./db');
-const userRouter = require('./routes/user');
-const { handleNotFound } = require('./utils/helper');
+require("./db");
+const userRouter = require("./routes/user");
+const { handleNotFound } = require("./utils/helper");
 const app = express();
 
 //this is all that is needed to allow the backend and frontend to talk from different servers
@@ -29,38 +29,36 @@ app.use(cors());
 app.use(express.json());
 
 //trouble with sending in sign-in data
-app.use(morgan('dev'))
-
+app.use(morgan("dev"));
 
 //want to use the userRouter inside the app:
 //want to prefix the userRouter with '/api/user' as it is an api for users
 //now when we want to make a request to user routers endpoint
 //send to: '/api/user-create'
-app.use('/api/user', userRouter);
-
+app.use("/api/user", userRouter);
 
 //Now need to set up the actor
-const actorRouter = require('./routes/actor');
-app.use('/api/actor', actorRouter);
-
+const actorRouter = require("./routes/actor");
+app.use("/api/actor", actorRouter);
 
 //Now need to set up the movies
 const movieRouter = require("./routes/movie");
-app.use('/api/movie', movieRouter);
-
+app.use("/api/movie", movieRouter);
 
 //router for reviews:
 //connecting the routes that we created in routes folder
 const reviewRouter = require("./routes/review");
-app.use('/api/review', reviewRouter);
+app.use("/api/review", reviewRouter);
 
-
+//router for finding out how many movies, users, and reviews we have:
+const adminRouter = require("./routes/admin");
+app.use("/api/admin", adminRouter);
 
 //with multiple routes with 404 errors
 //if the app does not find any route matching above (/api/user) use: /*
 //and run this callback function
 //
-app.use('/*', handleNotFound);
+app.use("/*", handleNotFound);
 
 //MVC - Modal view controller
 //client has view, server does not
@@ -100,5 +98,5 @@ app.use((err, req, res, next)=> {
 app.use(errorHandler);
 
 app.listen(8000, () => {
-    console.log('The port is listening on port 8000');
-})
+  console.log("The port is listening on port 8000");
+});

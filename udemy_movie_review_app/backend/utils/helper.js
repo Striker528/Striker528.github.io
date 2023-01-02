@@ -178,6 +178,20 @@ exports.getAverageRatings = async (movieId) => {
 };
 
 exports.topRatedMoviesPipeline = (type) => {
+  //for the user, we have to specify for what type of media to get the top rated of
+  //for the admin, want the top rated media in our entire database
+
+  const matchOptions = {
+    //checking if there a review or not
+    reviews: { $exists: true },
+    //if the review for each movie does exists, continue
+    //the movies that we look at must be public
+    status: { $eq: "public" },
+  };
+
+  //only look at the media with the type provided at the top of this function (Film, TV Show, etc.)
+  if (type) matchOptions.type = { $eq: type };
+
   return [
     {
       //whichever movie has the greatest number of reviews we shall return those
@@ -190,15 +204,7 @@ exports.topRatedMoviesPipeline = (type) => {
     },
     {
       //
-      $match: {
-        //checking if there a review or not
-        reviews: { $exists: true },
-        //if the review for each movie does exists, continue
-        //the movies that we look at must be public
-        status: { $eq: "public" },
-        //only look at the media with the type provided at the top of this function (Film, TV Show, etc.)
-        type: { $eq: type },
-      },
+      $match: matchOptions,
     },
     {
       //creating an object: need $project

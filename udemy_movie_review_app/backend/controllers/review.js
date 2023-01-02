@@ -12,6 +12,10 @@ exports.addReview = async (req, res) => {
   //need the owner, so we need the userId, which is in the isAuth method
   const userId = req.user._id;
 
+  //had an issue where an unverified user could still post reviews
+  if (!req.user.isVerified)
+    return sendError(res, "Please verify your email address");
+
   //need to check if the movieId is valid
   if (!isValidObjectId(movieId)) return sendError(res, "Invalid Movie");
 

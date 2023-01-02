@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 //in MovieListItem we are rendering the edit and delete button
 import MovieListItem from "./MovieListItem";
-import { useMovies, useNotification } from '../hooks';
+import { useMovies, useNotification } from "../hooks";
 import { deleteMovie, getMovieForUpdate, getMovies } from "../api/movie";
 import UpdateMovies from "./modals/UpdateMovies";
 import ConfirmModal from "./modals/ConfirmModal";
@@ -10,7 +10,6 @@ const pageNo = 0;
 const limit = 5;
 
 export default function LatestUploads() {
-
   // const [movies, setMovies] = useState([]);
   // const [busy, setBusy] = useState(false);
   // const [reachedToEnd, setReachedToEnd] = useState(false);
@@ -20,7 +19,7 @@ export default function LatestUploads() {
   // const { updateNotification } = useNotification();
 
   //need to use the movies in the useMovies() hook and not the movies in the current file
-  
+
   const { fetchLatestUploads, latestUploads } = useMovies();
 
   // const handleOnEditClick = async ({id}) => {
@@ -28,11 +27,11 @@ export default function LatestUploads() {
   //   //console.log(movie);
   //   const { movie, error } = await getMovieForUpdate(id);
   //   //console.log(movie);
-    
+
   //   if (error) return updateNotification("error", error);
 
   //   setSelectedMovie(movie);
-    
+
   //   setShowUpdateModal(true);
   // };
 
@@ -45,7 +44,7 @@ export default function LatestUploads() {
   //   setBusy(true);
   //   const { error, message } = await deleteMovie(selectedMovie.id);
   //   setBusy(false);
-    
+
   //   if (error) return updateNotification("error", error);
   //   updateNotification("success", message)
   //   setSelectedMovie(null);
@@ -80,10 +79,10 @@ export default function LatestUploads() {
   //   setMovies([...movies]);
   // };
 
-    useEffect(() => {
-      fetchLatestUploads();
-    }, []);
-  
+  useEffect(() => {
+    fetchLatestUploads();
+  }, []);
+
   // const handleAfterDelete = () => {
   //   fetchLatestUploads();
   // };
@@ -92,38 +91,38 @@ export default function LatestUploads() {
     fetchLatestUploads();
   };
 
-    //need to wrap the avatar in 2 curly braces
-    // <MovieListItem
-    //           movie={{
-    //               poster: "https://upload.wikimedia.org/wikipedia/commons/f/f0/Mops_oct09_cropped2.jpg",
-    //               title: "Holder title",
-    //               status: "public",
-    //               genres: ["Action", "Comedy"]
-    //           }}
-    //       />
+  //need to wrap the avatar in 2 curly braces
+  // <MovieListItem
+  //           movie={{
+  //               poster: "https://upload.wikimedia.org/wikipedia/commons/f/f0/Mops_oct09_cropped2.jpg",
+  //               title: "Holder title",
+  //               status: "public",
+  //               genres: ["Action", "Comedy"]
+  //           }}
+  //       />
   return (
-      <div className="bg-white shadow dark:shadow dark:bg-secondary p-5 rounded col-span-2">
-          <h1 className="font-semibold text-2xl mb-2 text-primary dark:text-white">
-              Recent Uploads
-          </h1>
+    <div className="bg-white shadow dark:shadow dark:bg-secondary p-5 rounded col-span-2">
+      <h1 className="font-semibold text-2xl mb-2 text-primary dark:text-white">
+        Recent Uploads
+      </h1>
 
-          <>
-      <div className="space-y-3 p-5">
-        {latestUploads.map(movie => {
-          return (
-            <MovieListItem
-              key={movie.id}
-              movie={movie}
-              afterDelete={handleUIUpdate}
-              afterUpdate={handleUIUpdate}
-              // onEditClick={() => handleOnEditClick(movie)}
-              // onDeleteClick={() => handleOnDeleteClick(movie)}
-            />
-          );
-        })}
-      </div>
+      <>
+        <div className="space-y-3 p-5">
+          {latestUploads.map((movie) => {
+            return (
+              <MovieListItem
+                key={movie.id}
+                movie={movie}
+                afterDelete={handleUIUpdate}
+                afterUpdate={handleUIUpdate}
+                // onEditClick={() => handleOnEditClick(movie)}
+                // onDeleteClick={() => handleOnDeleteClick(movie)}
+              />
+            );
+          })}
+        </div>
 
-      {/* <ConfirmModal
+        {/* <ConfirmModal
         visible={showConfirmModal}
         onConfirm={handleOnDeleteConfirm}
         onCancel={hideConfirmModal}
@@ -138,8 +137,7 @@ export default function LatestUploads() {
         onSuccess={handleOnUpdate}
         onClose={hideUpdateForm}
       /> */}
-    </>
-
-      </div>
-  )
+      </>
+    </div>
+  );
 }

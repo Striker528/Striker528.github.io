@@ -48,3 +48,12 @@ export const getPoster = (posters = []) => {
   //other wise, select the first poster
   return posters[0];
 };
+
+export const convertReviewCount = (count = 0) => {
+  //console.log(count);
+  if (count <= 999) return count;
+
+  //if a number is above 1000, it will convert it to #.## k
+  //if review count was 1522 it will be changed to 1.52
+  return parseFloat(count / 1000).toFixed(2) + "k";
+};
